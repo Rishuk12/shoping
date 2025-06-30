@@ -329,7 +329,7 @@
         { name: "Banana leaf", price: 5, img: "https://media.istockphoto.com/id/466296394/photo/fresh-whole-banana-leaf.jpg?s=612x612&w=0&k=20&c=_3HnVzWWQobDlJbaCRO1LEA2Jck5c9RIaBM3K5tTrM8=", type: "phool" },
        { name: "Cow Urine (गौमूत्र)", price: 10, img: "https://media.istockphoto.com/id/1397693514/photo/glass-bottle-isolated-on-white.jpg?s=612x612&w=0&k=20&c=SMq2IJOFaN2O9TgnCqHEQxE3d019EhAmMMkgd3KNQOE=", type: "phool" },
        { name: "Dry cow dung", price: 5, img: "https://media.istockphoto.com/id/524179074/photo/pellet-for-heating.jpg?s=612x612&w=0&k=20&c=jKIpU5QzwuJRc1BR3MJu4Ecoh6_qcyEfdXY_rCBxaRg=", type: "phool" },
-      { name: "cow dung", price: 5, img: "https://media.istockphoto.com/id/1738805853/photo/dry-cow-excrement-isolated-close-top-view.jpg?s=612x612&w=0&k=20&c=KxbPoOWbHkT43HjthPYPWibRaLoZtPXyBqy0n8GFIPY=", type: "phool" },
+     // { name: "cow dung", price: 5, img: "https://media.istockphoto.com/id/1738805853/photo/dry-cow-excrement-isolated-close-top-view.jpg?s=612x612&w=0&k=20&c=KxbPoOWbHkT43HjthPYPWibRaLoZtPXyBqy0n8GFIPY=", type: "phool" },
 
     ];
 
@@ -475,8 +475,8 @@
       const mobile = document.getElementById('mobile').value.trim();
       const address = document.getElementById('address').value.trim();
       const pin = document.getElementById('pin').value.trim();
-      const state = document.getElementById('state').value.trim();
-      const district = document.getElementById('district').value.trim();
+      const state = document.getElementById('state').value.trim().toLowerCase();
+      const district = document.getElementById('district').value.trim().toLowerCase();
       const timeSlot = document.getElementById('timeSlot').value;
       const payment = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
 
@@ -487,9 +487,9 @@
         const states = Array.isArray(area.state) ? area.state : [area.state];
         const districts = Array.isArray(area.district) ? area.district : [area.district];
         return (
-          states.map(s => s.toLowerCase()).includes(state.toLowerCase()) &&
-          districts.map(d => d.toLowerCase()).includes(district.toLowerCase()) &&
-          area.pincodes.includes(pin)
+          states.map(s => s.toLowerCase().trim()).includes(state.toLowerCase()) &&
+          districts.map(d => d.toLowerCase().trim()).includes(district) &&
+          area.pincodes.map(p => p.trim()).includes(pin)
         );
       });
 
