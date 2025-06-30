@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veg, Phool & Fruits Selector</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFF5E6;
+    }
+    h1 {
+      text-align: center;
+      color: #1C482E;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    .back-btn {
+      display: inline-block;
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      max-height: 140px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      color: #1C482E;
+      margin: 8px 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .controls button {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .controls button:hover {
+      background: #2c5f2d;
+    }
+    .price {
+      font-size: 0.9rem;
+      color: #1C482E;
+      margin: 4px 0;
+    }
+    .add-btn {
+      background: #1C482E;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .add-btn:hover {
+      background: #3C803F;
+    }
+    @media (max-width: 480px) {
+      .card img { max-height: 120px; }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-btn" onclick="history.back()">← Back</div>
+  <h1>Select Vegetables, Puja Flowers & Fruits</h1>
+
+  <div class="grid" id="vegGrid"></div>
+
+  <h1>🛒 Select Your Items</h1>
+
+  <div class="section-title">🌼 Puja Phool (₹ per piece)</div>
+  <div class="grid" id="flowerGrid"></div>
+
+  <div class="section-title">🍎 Fruits (₹ per kg)</div>
+  <div class="grid" id="fruitGrid"></div>
+
+  <div class="total" id="totalDisplay">Total: ₹0</div>
+
+  <script>
+    const items = [
+      // ✅ Vegetables (500g)
+      //{ name: "Potato", price: 10, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg", type: "veg" },
+      //{ name: "Tomato", price: 12, img: "https://media.istockphoto.com/id/831570242/photo/three-juicy-red-tomatoes.jpg", type: "veg" },
+      
+      
+      { name: "Red Potato (Aloo) ",price:12, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg?s=612x612&w=0&k=20&c=wzcLLI5sS7U9qafpsTdlFK0jUV3SI-A8chmNBwXKRkc=" ,type:"veg"},
+      { name: "White Potato (Aloo)",price:12, img: "https://media.istockphoto.com/id/479903950/photo/new-potato-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Npy46xC15Vipx35PDek1Xh3gW3VsI8HWieHEES4HLNY=" ,type:"veg"},
+      { name: "Pyaaz (Onion)",price:12 ,img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion-on-for-boarding-much-pommels.webp?a=1&b=1&s=612x612&w=0&k=20&c=LPEGVz2fmXuVjh-_gsL7-NyQHoAW654J1ihwZOzm06s=",type:"veg" },
+    
+
+
+      // ✅ Fruits (500g)
+      //{ name: "Apple", price: 30, img: "https://media.istockphoto.com/id/178418735/photo/red-apple.jpg", type: "fruit" },
+      //{ name: "Banana", price: 15, img: "https://media.istockphoto.com/id/173242750/photo/bananas.jpg", type: "fruit" },
+      //{ name: "Mango", price: 25, img: "https://media.istockphoto.com/id/466175186/photo/mango.jpg", type: "fruit" },
+
+      { name: "Banana", price: 30, img: "https://media.istockphoto.com/id/636739634/photo/banana.jpg?s=612x612&w=0&k=20&c=pO0985tQi1LpWRlWqpRvbab8S5yxgnEOVcs5CHIlcDE=", type: "fruit" },
+      { name: "Kinnaur Apple ", price: 15, img: "https://media.istockphoto.com/id/1141708425/photo/red-apples.jpg?s=612x612&w=0&k=20&c=tAlaTEx0l-dhxB4ETtIozc8B8bOhP0kDbGzVOKqGmEw=", type: "fruit" },
+      { name: "kashmari Apple", price: 25, img: "https://media.istockphoto.com/id/121274214/photo/best-red-apple.jpg?s=612x612&w=0&k=20&c=8iKCYqajHYLFkyzDWHY1n0ut70hIHQQHfvQNBEFw8ls=", type: "fruit" },
+      
+
+      // ✅ Puja Flowers (pieces)
+      { name: "Marigold", price: 5, img: "https://media.istockphoto.com/id/493183382/photo/marigold-flower.jpg?s=612x612&w=0&k=20&c=FdewsGC4WmV-nNeBfMkuc__H2fyWeFqEs0_pxaGx7SA=", type: "phool" },
+      { name: "Marigold", price: 8, img: "https://media.istockphoto.com/id/885817678/photo/marigold-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=A0XLDxtYrAPQPPstb_lT0dtrYde7LfcHcH0cdRJ7xTU=", type: "phool" },
+      { name: "Lotus", price: 10, img: "https://media.istockphoto.com/id/1559682249/photo/beautiful-pink-fresh-lotus-isolated-in-the-white-background.jpg?s=612x612&w=0&k=20&c=_5FF3rYm9hWXcbVFK83SD8kFBOIwUut-HT6Q23iTsZ4=", type: "phool" },
+
+    ];
+
+   
+
+    const vegGrid = document.getElementById('vegGrid');
+    const quantities = {};
+
+    items.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const id = i + 1;
+
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <h2>${item.name}</h2>
+        <div class="controls">
+          <button onclick="changeQty(${id}, -1)">-</button>
+          <span id="qty-${id}">0 ${item.type === "phool" ? 'pc' : 'g'}</span>
+          <button onclick="changeQty(${id}, 1)">+</button>
+        </div>
+        <div class="price">Min Price: ₹${item.price} / ${item.type === "phool" ? 'pc' : '500g'}</div>
+        <div class="price" id="price-${id}">₹0</div>
+        <button class="add-btn" onclick="addToCart('${item.name}', ${id})">Add</button>
+      `;
+      vegGrid.appendChild(card);
+    });
+
+    function changeQty(id, delta) {
+      const item = items[id - 1];
+      if (!quantities[id]) quantities[id] = 0;
+
+      // Quantity increment rule
+      const step = item.type === "phool" ? 1 : 500;
+      const displayUnit = item.type === "phool" ? "pc" : "g";
+
+      quantities[id] = Math.max(0, quantities[id] + (delta * step));
+      const totalPrice = item.type === "phool"
+        ? quantities[id] * item.price
+        : (quantities[id] / 500) * item.price;
+
+      document.getElementById(`qty-${id}`).innerText = `${quantities[id]} ${displayUnit}`;
+      document.getElementById(`price-${id}`).innerText = `₹${totalPrice}`;
+    }
+
+    function addToCart(name, id) {
+      const qty = quantities[id] || 0;
+      const item = items[id - 1];
+      const price = item.type === "phool"
+        ? qty * item.price
+        : (qty / 500) * item.price;
+
+      alert(`${name} added to cart\nQuantity: ${qty} ${item.type === 'phool' ? 'pc' : 'g'}\nPrice: ₹${price}`);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veg, Phool & Fruits Selector</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #FFF5E6;
+      color: #1C482E;
+    }
+    .back-btn {
+      background-color: #3C803F;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      display: inline-block;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    h1 {
+      text-align: center;
+      padding: 10px;
+      color: #1C482E;
+    }
+    .section {
+      padding: 20px;
+    }
+    .section h2 {
+      margin-bottom: 10px;
+      border-bottom: 2px solid #3C803F;
+      display: inline-block;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .card {
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+      padding: 10px;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.03);
+    }
+    .card img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .card h3 {
+      font-size: 16px;
+      margin: 10px 0 5px;
+    }
+    .card p {
+      margin: 0;
+      font-weight: bold;
+    }
+    .btn {
+      margin-top: 10px;
+      background-color: #3C803F;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 20px;
+      }
+      .card h3 {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="back-btn" onclick="history.back()">← Back</div>
+<h1>Select Vegetables, Puja Flowers & Fruits</h1>
+
+<div class="section">
+  <h2>🥦 Vegetables</h2>
+  <div id="vegGrid" class="grid"></div>
+</div>
+
+<div class="section">
+  <h2>🌸 Puja Flowers</h2>
+  <div id="flowerGrid" class="grid"></div>
+</div>
+
+<div class="section">
+  <h2>🍎 Fruits</h2>
+  <div id="fruitGrid" class="grid"></div>
+</div>
+
+<script>
+  const items = [
+    { name: "Tomato (टमाटर)", price: 12, img: "https://cdn.pixabay.com/photo/2014/12/21/23/28/tomato-575837_1280.png", type: "veg" },
+    { name: "Potato (आलू)", price: 10, img: "https://cdn.pixabay.com/photo/2015/06/10/20/33/potatoes-805419_1280.jpg", type: "veg" },
+    { name: "Onion (प्याज़)", price: 18, img: "https://cdn.pixabay.com/photo/2018/06/01/19/02/onion-3442554_1280.jpg", type: "veg" },
+    { name: "Brinjal (बैंगन)", price: 15, img: "https://cdn.pixabay.com/photo/2020/09/06/06/59/eggplant-5547115_1280.jpg", type: "veg" },
+    { name: "Coriander (धनिया)", price: 0, img: "https://cdn.pixabay.com/photo/2019/01/10/15/49/coriander-3925786_1280.jpg", type: "veg" },
+
+    { name: "Puja Phool (पूजा फूल)", price: 0, img: "https://cdn.pixabay.com/photo/2021/09/04/15/20/marigold-6598174_1280.jpg", type: "phool" },
+    { name: "Rose (गुलाब)", price: 5, img: "https://cdn.pixabay.com/photo/2016/06/07/09/15/rose-1442411_1280.jpg", type: "phool" },
+    { name: "Lotus (कमल)", price: 15, img: "https://cdn.pixabay.com/photo/2020/08/25/05/31/lotus-5515876_1280.jpg", type: "phool" },
+
+    { name: "Apple (सेब)", price: 60, img: "https://cdn.pixabay.com/photo/2015/04/10/00/41/apple-715077_1280.jpg", type: "fruit" },
+    { name: "Banana (केला)", price: 25, img: "https://cdn.pixabay.com/photo/2018/03/01/14/40/bananas-3193660_1280.jpg", type: "fruit" },
+    { name: "Mango (आम)", price: 80, img: "https://cdn.pixabay.com/photo/2016/03/05/19/02/mango-1238253_1280.jpg", type: "fruit" },
+    { name: "Papaya (पपीता)", price: 35, img: "https://cdn.pixabay.com/photo/2015/03/24/16/28/papaya-688123_1280.jpg", type: "fruit" }
+  ];
+
+  const vegGrid = document.getElementById("vegGrid");
+  const flowerGrid = document.getElementById("flowerGrid");
+  const fruitGrid = document.getElementById("fruitGrid");
+
+  function createCard(item) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${item.img}" alt="${item.name}" />
+      <h3>${item.name}</h3>
+      <p>₹${item.price}/kg</p>
+      <button class="btn">Add to Cart</button>
+    `;
+    return card;
+  }
+
+  items.forEach(item => {
+    const card = createCard(item);
+    if (item.type === "veg") vegGrid.appendChild(card);
+    else if (item.type === "phool") flowerGrid.appendChild(card);
+    else if (item.type === "fruit") fruitGrid.appendChild(card);
+  });
+</script>
+
+</body>
+</html>

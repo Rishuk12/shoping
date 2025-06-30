@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veg, Phool & Fruits Selector</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFF5E6;
+    }
+    h1 {
+      text-align: center;
+      color: #1C482E;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .back-btn, .cart-btn {
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .card:hover { transform: scale(1.04); }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      max-height: 140px;
+      object-fit: cover;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .controls button, .add-btn, .place-order {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .add-btn { width: 100%; margin-top: 8px; }
+    .cart-popup {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      width: 320px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+      padding: 16px;
+      z-index: 999;
+      display: none;
+    }
+    .cart-popup h2 {
+      font-size: 1.2rem;
+      margin-top: 0;
+      color: #1C482E;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 6px 0;
+    }
+    .cart-item span { font-size: 0.9rem; }
+    .cart-item button {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    .address-form input {
+      width: 100%;
+      margin: 4px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .success-popup {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #d4edda;
+      color: #155724;
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+    #orderHistory {
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="back-btn" onclick="history.back()">← Back</div>
+    <div class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+  </div>
+
+  <h1>Select Vegetables, Puja Flowers & Fruits</h1>
+
+  <div class="grid" id="vegGrid"></div>
+
+  <div class="cart-popup" id="cartPopup">
+    <h2>Your Cart</h2>
+    <div id="cartItems"></div>
+    <p><strong>Total: ₹<span id="cartTotal">0</span></strong></p>
+    <h3>Delivery Address</h3>
+    <div class="address-form">
+      <input placeholder="Full Name" id="fullName" />
+      <input placeholder="Mobile Number" id="mobile" />
+      <input placeholder="Address" id="address" />
+      <input placeholder="Pin Code" id="pin" />
+      <input placeholder="Area" id="area" />
+      <input placeholder="Landmark" id="landmark" />
+      <input placeholder="State" id="state" />
+    </div>
+    <button class="place-order" onclick="placeOrder()">Place Order</button>
+
+    <h2 style="margin-top: 20px;">📝 Order History</h2>
+    <div id="orderHistory"></div>
+  </div>
+
+  <div class="success-popup" id="successPopup">🎉 Order Placed Successfully!</div>
+
+  <script>
+    const items = [
+      { name: "Red Potato (Aloo)", price: 12, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg", type: "veg" },
+      { name: "White Potato (Aloo)", price: 12, img: "https://media.istockphoto.com/id/479903950/photo/new-potato-isolated.jpg", type: "veg" },
+      { name: "Pyaaz (Onion)", price: 12, img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion.jpg", type: "veg" },
+      { name: "Banana", price: 30, img: "https://media.istockphoto.com/id/636739634/photo/banana.jpg", type: "fruit" },
+      { name: "Kinnaur Apple", price: 15, img: "https://media.istockphoto.com/id/1141708425/photo/red-apples.jpg", type: "fruit" },
+      { name: "Kashmiri Apple", price: 25, img: "https://media.istockphoto.com/id/121274214/photo/best-red-apple.jpg", type: "fruit" },
+      { name: "Marigold (Orange)", price: 5, img: "https://media.istockphoto.com/id/493183382/photo/marigold-flower.jpg", type: "phool" },
+      { name: "Marigold (Yellow)", price: 8, img: "https://media.istockphoto.com/id/885817678/photo/marigold.jpg", type: "phool" },
+      { name: "Lotus", price: 10, img: "https://media.istockphoto.com/id/1559682249/photo/lotus.jpg", type: "phool" }
+    ];
+
+    const cart = [];
+    const vegGrid = document.getElementById('vegGrid');
+    const cartItems = document.getElementById('cartItems');
+    const cartCount = document.getElementById('cart-count');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartPopup = document.getElementById('cartPopup');
+    const successPopup = document.getElementById('successPopup');
+
+    const quantities = {};
+
+    items.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <h2>${item.name}</h2>
+        <div class="controls">
+          <button onclick="changeQty(${index}, -1)">-</button>
+          <span id="qty-${index}">0 ${item.type === "phool" ? 'pc' : 'kg'}</span>
+          <button onclick="changeQty(${index}, 1)">+</button>
+        </div>
+        <div class="price">₹${item.price} / ${item.type === "phool" ? 'pc' : '500g'}</div>
+        <button class="add-btn" onclick="addToCart(${index})">Add</button>
+      `;
+      vegGrid.appendChild(card);
+    });
+
+    function changeQty(index, delta) {
+      const item = items[index];
+      const step = item.type === "phool" ? 1 : 500;
+      quantities[index] = Math.max(0, (quantities[index] || 0) + delta * step);
+      document.getElementById(`qty-${index}`).innerText = `${quantities[index]} ${item.type === "phool" ? 'pc' : 'kg'}`;
+    }
+
+    function addToCart(index) {
+      const qty = quantities[index] || 0;
+      if (qty === 0) return;
+      const item = items[index];
+      const exists = cart.find(i => i.index === index);
+      if (exists) {
+        exists.qty += qty;
+      } else {
+        cart.push({ index, qty });
+      }
+      quantities[index] = 0;
+      document.getElementById(`qty-${index}`).innerText = `0 ${item.type === "phool" ? 'pc' : 'kg'}`;
+      updateCart();
+    }
+
+    function updateCart() {
+      cartItems.innerHTML = '';
+      let total = 0;
+      cart.forEach((c, i) => {
+        const item = items[c.index];
+        const price = item.type === "phool" ? c.qty * item.price : (c.qty / 500) * item.price;
+        total += price;
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            <span>${item.name} - ${c.qty}${item.type === "phool" ? 'pc' : 'kg'} - ₹${price.toFixed(2)}</span>
+            <button onclick="removeFromCart(${i})">x</button>
+          </div>
+        `;
+      });
+      cartCount.innerText = cart.length;
+      cartTotal.innerText = total.toFixed(2);
+    }
+
+    function removeFromCart(i) {
+      cart.splice(i, 1);
+      updateCart();
+    }
+
+    function toggleCart() {
+      cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function addToHistory(orderData) {
+      const historyDiv = document.getElementById('orderHistory');
+      const now = new Date();
+      const dateStr = now.toLocaleDateString();
+      const timeStr = now.toLocaleTimeString();
+      
+      const orderHTML = `
+        <div style="margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 8px;">
+          <strong>Date:</strong> ${dateStr} ${timeStr}<br>
+          <strong>Items:</strong> ${orderData.items}<br>
+          <strong>Total:</strong> ₹${orderData.total}<br>
+          <strong>Status:</strong> <span style="color: green;">Pending</span>
+        </div>
+      `;
+      historyDiv.innerHTML += orderHTML;
+    }
+
+    function placeOrder() {
+      if (cart.length === 0) return alert("Cart is empty!");
+      const name = document.getElementById('fullName').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+      const address = document.getElementById('address').value.trim();
+      if (!name || !mobile || !address) return alert("Please fill address details.");
+
+      const orderItems = cart.map(c => {
+        const item = items[c.index];
+        return `${item.name} (${c.qty}${item.type === "phool" ? 'pc' : 'kg'})`;
+      }).join(", ");
+      const total = parseFloat(cartTotal.innerText);
+
+      addToHistory({ items: orderItems, total });
+
+      cart.length = 0;
+      updateCart();
+      cartPopup.style.display = 'none';
+      successPopup.style.display = 'block';
+      setTimeout(() => successPopup.style.display = 'none', 3000);
+    }
+  </script>
+
+</body>
+</html>

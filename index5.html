@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VegPhool & Fruit Cart</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff8e1;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #1c482e;
+    }
+    .section-title {
+      margin-top: 40px;
+      color: #3c803f;
+      font-size: 1.5rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+    .controls button {
+      background: #3c803f;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .price {
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    .total {
+      text-align: right;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛒 Select Your Items</h1>
+
+  <div class="section-title">🌼 Puja Phool (₹ per piece)</div>
+  <div class="grid" id="flowerGrid"></div>
+
+  <div class="section-title">🍎 Fruits (₹ per kg)</div>
+  <div class="grid" id="fruitGrid"></div>
+
+  <div class="total" id="totalDisplay">Total: ₹0</div>
+
+  <script>
+    const flowers = [
+      { name: "Marigold", price: 2, img: "https://via.placeholder.com/150?text=Marigold" },
+      { name: "Rose", price: 3, img: "https://via.placeholder.com/150?text=Rose" },
+      { name: "Jasmine", price: 1, img: "https://via.placeholder.com/150?text=Jasmine" },
+      { name: "Lotus", price: 5, img: "https://via.placeholder.com/150?text=Lotus" },
+      { name: "Hibiscus", price: 4, img: "https://via.placeholder.com/150?text=Hibiscus" },
+      { name: "Kaner", price: 2, img: "https://via.placeholder.com/150?text=Kaner" },
+      { name: "Champa", price: 2, img: "https://via.placeholder.com/150?text=Champa" },
+      { name: "Chameli", price: 1, img: "https://via.placeholder.com/150?text=Chameli" },
+      { name: "Tagar", price: 2, img: "https://via.placeholder.com/150?text=Tagar" },
+      { name: "Parijat", price: 3, img: "https://via.placeholder.com/150?text=Parijat" },
+    ];
+
+    const fruits = [
+      { name: "Apple", price: 120, img: "https://via.placeholder.com/150?text=Apple" },
+      { name: "Banana", price: 50, img: "https://via.placeholder.com/150?text=Banana" },
+      { name: "Mango", price: 100, img: "https://via.placeholder.com/150?text=Mango" },
+      { name: "Papaya", price: 40, img: "https://via.placeholder.com/150?text=Papaya" },
+      { name: "Orange", price: 80, img: "https://via.placeholder.com/150?text=Orange" },
+      { name: "Watermelon", price: 30, img: "https://via.placeholder.com/150?text=Watermelon" },
+      { name: "Pineapple", price: 60, img: "https://via.placeholder.com/150?text=Pineapple" },
+      { name: "Grapes", price: 90, img: "https://via.placeholder.com/150?text=Grapes" },
+      { name: "Guava", price: 40, img: "https://via.placeholder.com/150?text=Guava" },
+      { name: "Pear", price: 70, img: "https://via.placeholder.com/150?text=Pear" },
+    ];
+
+    const flowerGrid = document.getElementById('flowerGrid');
+    const fruitGrid = document.getElementById('fruitGrid');
+    const totalDisplay = document.getElementById('totalDisplay');
+
+    const cart = { flower: {}, fruit: {} };
+
+    function renderGrid(data, type, grid, unitLabel) {
+      data.forEach((item, index) => {
+        const id = `${type}-${index}`;
+        cart[type][id] = 0;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <h3>${item.name}</h3>
+          <p>₹${item.price} ${unitLabel}</p>
+          <div class="controls">
+            <button onclick="updateQty('${type}', '${id}', -1, ${item.price})">−</button>
+            <span id="qty-${id}">0</span>
+            <button onclick="updateQty('${type}', '${id}', 1, ${item.price})">+</button>
+          </div>
+          <div class="price" id="price-${id}">₹0</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function updateQty(type, id, delta, pricePerUnit) {
+      cart[type][id] = Math.max(0, cart[type][id] + delta);
+      document.getElementById(`qty-${id}`).textContent = cart[type][id];
+      document.getElementById(`price-${id}`).textContent = `₹${cart[type][id] * pricePerUnit}`;
+      updateTotal();
+    }
+
+    function updateTotal() {
+      let total = 0;
+      for (const type in cart) {
+        for (const id in cart[type]) {
+          const item = (type === 'flower' ? flowers : fruits)[parseInt(id.split('-')[1])];
+          total += cart[type][id] * item.price;
+        }
+      }
+      totalDisplay.textContent = `Total: ₹${total}`;
+    }
+
+    renderGrid(flowers, 'flower', flowerGrid, 'per piece');
+    renderGrid(fruits, 'fruit', fruitGrid, 'per kg');
+  </script>
+</body>
+</html>

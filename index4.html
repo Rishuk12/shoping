@@ -1,0 +1,207 @@
+<!-- Full code below -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vegetable Selector with Price</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFF5E6;
+    }
+    h1 {
+      text-align: center;
+      color: #1C482E;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    .back-btn {
+      display: inline-block;
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      max-height: 140px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      color: #1C482E;
+      margin: 8px 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .controls button {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .controls button:hover {
+      background: #2c5f2d;
+    }
+    .price {
+      font-size: 0.9rem;
+      color: #1C482E;
+      margin: 6px 0;
+    }
+    .add-btn {
+      background: #1C482E;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .add-btn:hover {
+      background: #3C803F;
+    }
+    @media (max-width: 480px) {
+      .card img { max-height: 120px; }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-btn" onclick="history.back()">← Back</div>
+  <h1>Select Your Vegetables</h1>
+
+  <div class="grid" id="vegGrid"></div>
+
+  <script>
+   
+     const vegetables = [
+
+      { name: "Red Potato (Aloo) ", img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg?s=612x612&w=0&k=20&c=wzcLLI5sS7U9qafpsTdlFK0jUV3SI-A8chmNBwXKRkc=" },
+      { name: "White Potato (Aloo)", img: "https://media.istockphoto.com/id/479903950/photo/new-potato-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Npy46xC15Vipx35PDek1Xh3gW3VsI8HWieHEES4HLNY=" },
+      { name: "Pyaaz (Onion)", img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion-on-for-boarding-much-pommels.webp?a=1&b=1&s=612x612&w=0&k=20&c=LPEGVz2fmXuVjh-_gsL7-NyQHoAW654J1ihwZOzm06s=" },
+      { name: "Tamatar (Tomato)", img: "https://media.istockphoto.com/id/831570242/photo/three-juicy-red-tomatoes-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=bBrjZsWY4eg90OpA2S6cO3psGR1TFx8f4L0HAmIQqm4=" },
+      { name: "Lauki (Bottle Gourd)", img: "https://media.istockphoto.com/id/1481121489/photo/bottle-gourd.jpg?s=612x612&w=0&k=20&c=at9YKjIS2pc94LdTmioVBGO6-W69i_C5L20C55eb3qg=" },
+      { name: "Tori (Ridge Gourd)", img: "https://media.istockphoto.com/id/490025896/photo/fresh-loofah.jpg?s=612x612&w=0&k=20&c=yypocElDvpX16k7kDE0EUjyC7z_uZltvBP8uQU_9iMc=" },
+      { name: "Bhindi (Lady Finger)", img: "https://media.istockphoto.com/id/2149005541/photo/fresh-green-okra-isolated-on-white-background-healthy-vegetables.jpg?s=612x612&w=0&k=20&c=zWTwhCkPrusDH_zo-ZppKQOZCV34Wsegb14_uvHotBU=" },
+      { name: "Baingan - Long", img: "https://media.istockphoto.com/id/486633634/photo/large-eggplant-on-white-background.jpg?s=612x612&w=0&k=20&c=ohM7jIL33o76GEtlU2Uol_9NhtxL-1IZD5h1ZFA0FSI=" },
+      { name: "Baingan - Round", img: "https://media.istockphoto.com/id/1186292631/photo/original-shape-eggplant-fruit-on-a-white-background.jpg?s=612x612&w=0&k=20&c=i4m-pBlYMJKOLyMDZm8lDWwnq0XLTf6TNRrwTI-SN3c=" },
+      { name: "Baingan - round", img: "https://media.istockphoto.com/id/1253741876/photo/eggplant-or-aubergine-vegetable-on-white-background.jpg?s=612x612&w=0&k=20&c=-LWaw663UvH6IHgCyd0svv_akxAkYJB-DeC-lVA77H0=" },
+      { name: "Baingan - green", img: "https://media.istockphoto.com/id/471674583/photo/eggplant.jpg?s=612x612&w=0&k=20&c=fD8Wt1kpy62WZZpkAzDTvGP1AHqCqFZPhVuKZen9H20=" },
+      { name: "Shimla Mirch (Capsicum)", img: "https://media.istockphoto.com/id/1089613296/photo/indian-green-peppers.jpg?s=612x612&w=0&k=20&c=-wXlLtGIHGno3bXChePGp0o4N33e6j4pYERpzClrZdI=" },
+
+      { name: "Shimla Mirch (Capsicum)", img: "https://media.istockphoto.com/id/628582556/photo/red-bell-pepper.jpg?s=612x612&w=0&k=20&c=fJfVoIiAR0GcuDpbqsTNJNZpV7snvfeLtXCWdKGRtXU=" },
+      { name: "Shimla Mirch (Capsicum)", img: "https://media.istockphoto.com/id/925190112/photo/yellow-bell-peppers-on-white-background.jpg?s=612x612&w=0&k=20&c=LZVSDPOMGPg3PScLfp0CgdIwfPCRcfhdcSuN4cJOY38=" },
+      { name: "Karela (Bitter Gourd)", img: "https://media.istockphoto.com/id/1266443111/photo/bitter-melon-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=vthnH1hZUjPZNBgQN4QdgJWC_VfoZJP_cbNy37MmohU=" },
+      { name: "Patta Gobhi (Cabbage)", img: "https://media.istockphoto.com/id/183893293/photo/cabbage.jpg?s=612x612&w=0&k=20&c=BwSxCJCGQYLhGacneRl_0LfL-rB4qrWpyQASPrhFCSA=" },
+      { name: "Phool Gobhi (Cauliflower)", img: "https://media.istockphoto.com/id/172868533/photo/a-cauliflower-with-foliage-isolated-on-a-white-background.jpg?s=612x612&w=0&k=20&c=Gq5DdoIaUNQ1tT5zG41Ex1Eq03c6sN_HduTVpA6VNB8=" },
+      { name: "Matar (Green Peas)", img: "https://media.istockphoto.com/id/155431404/photo/green-pea.jpg?s=612x612&w=0&k=20&c=loFtZjD50IXlUuwXS11ovxLLu-ZxyySyR88GoPccnq4=" },
+      { name: "Gajar (orange Carrot)", img: "https://media.istockphoto.com/id/619252960/photo/carrot.jpg?s=612x612&w=0&k=20&c=C-PlZ2oHW2SDCkaZXn8rg1UFdeF5ismwiy3v7uQRVKE=" },
+      { name: "gajar(red carrot)", img: "https://media.istockphoto.com/id/1448517342/photo/fresh-vegetable-carrots-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=P7DeYtTDIw0EMzqMLZo_c3L7QbFULw2ug_DWJf04wvk=" },
+      { name: "Chukandar (Beetroot)", img: "https://media.istockphoto.com/id/2153935146/photo/red-beetroot-on-stem-with-green-leaves-and-beet-cross-section-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=-jadYwVUlFFJ13CNwcTK4jSgCT1tb7Bf_Wt9BbsXTpc=" },
+      { name: "Methi (Fenugreek)", img: "https://media.istockphoto.com/id/494568564/photo/fresh-green-fenugreek-leaves-on-white-background.jpg?s=612x612&w=0&k=20&c=PXoW0zaeCGgAP1w7RqJvsHiqDIcfImbdu-s7rfo0Rik=" },
+      { name: "Palak (Spinach)", img: "https://media.istockphoto.com/id/1006196472/photo/bunch-of-spinach-leaves-on-isolated-white-background.jpg?s=612x612&w=0&k=20&c=OAIswtUC1aMNDwtMEFIaZv6fSIftsoAV-cgJZSGLJ7A=" },
+      { name: "Sarson (Mustard Leaves)", img: "https://media.istockphoto.com/id/1298820852/photo/sarson-leaves-saag-of-brown-or-chinese-black-mustard-rai-raya-or-raai-also-known-as-brassica.jpg?s=612x612&w=0&k=20&c=coHjV9xRwh56RhNhQD0ou9BOX8ZTBS_aVLSdcHr9E4Y=" },
+      { name: "Kathal (Jackfruit)", img: "https://media.istockphoto.com/id/1490812553/photo/closeup-jackfruit-with-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=PYvmzXYuEKpK0C8OeH-NOECdNn-6AK3Xi3pFvwdlIrI=" },
+      { name: "Parwal (Pointed Gourd)", img: "https://media.istockphoto.com/id/179239559/photo/pointed-gourd-or-potol.jpg?s=612x612&w=0&k=20&c=gPiUoxNUsQPZjro_GTAr7P2JOxlnKKVgCr1fBgRiQ7s=" },
+      { name: "Shalgam (Turnip)", img: "https://media.istockphoto.com/id/1465228611/photo/kohlrabi-vegetable.jpg?s=612x612&w=0&k=20&c=5ldmtsHV3RiT746LyK2nBxy2j1WJ9OYsSWjVIuwTENw=" },
+      { name: "Mooli (Radish)", img: "https://media.istockphoto.com/id/91608070/photo/large-japanese-daikon-radish-or-mooli.jpg?s=612x612&w=0&k=20&c=3lFr6V-JZ9idnw9H5CwB_CDXBsS-QPN57ttCKU114WQ=" },
+      { name: "Spring Onion", img: "https://media.istockphoto.com/id/145122488/photo/a-bunch-of-fresh-spring-onions.jpg?s=612x612&w=0&k=20&c=-5dn2HmcPYbsNuHKH9ne4Es_Tm_CsGrMFIAVBLDBCDo=" },
+      { name: "Sweet Corn", img: "https://media.istockphoto.com/id/841408966/photo/corn-on-the-cob-kernels-peeled-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=v76mGkmlRYhLo98AMVQbpCpYwDc-1OGv7pI96aHc8zA=" },
+      { name: "French Beans", img: "https://media.istockphoto.com/id/140236373/photo/portion-of-uncooked-green-french-beans.jpg?s=612x612&w=0&k=20&c=tGhxoV_eu72htyKDZk1ECFHi1eZJVi33hZ_qDjKnywA=" },
+      { name: "Nimbu (Lemon)", img: "https://media.istockphoto.com/id/2154842083/photo/close-up-of-a-sliced-fresh-green-organic-lemon.jpg?s=612x612&w=0&k=20&c=bZ_h399knoJFr7FeBDlKEUpOqbVMngeeMH0cLOkAl78=" },
+      { name: "Dhania (Coriander)", img: "https://media.istockphoto.com/id/155098529/photo/coriander.jpg?s=612x612&w=0&k=20&c=kqN-POfQsSdJITqUisNqdo7EIi1I5dmzjm3ncAuweLw=" },
+      { name: "Hari Mirch (Green Chilli)", img: "https://media.istockphoto.com/id/1394737507/photo/green-hot-chili-peppers-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=8WPSxHchpOtdfWi3N35OrP6_3OPuThEKND0nUyT9apg=" },
+      { name: "deshi Kheera (Cucumber)", img: "https://media.istockphoto.com/id/171321660/photo/gherkin-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=G_W39fNvKTKorp-838TIxJlb4Qs_EPwyT_vQjZLt_cA=" },
+      { name: "kheera (cucumber)", img: "https://media.istockphoto.com/id/967491012/photo/whole-with-slice-cucumber-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Kmeq5UlXegj7sQEGicTWbxqngB3j57JZBmOM-P_nTwU=" },
+      { name: "Zucchini", img: "https://media.istockphoto.com/id/471152113/photo/two-courgettes-stacked-with-three-slices-beside-them.jpg?s=612x612&w=0&k=20&c=uOAwaRXLtohHdJH97HW7AhsIIdzPiD6s_ZMlWbMDJY8=" },
+      { name: "Broccoli", img: "https://media.istockphoto.com/id/183300149/photo/broccoli.jpg?s=612x612&w=0&k=20&c=ryP5FrMKK8ejTMX04iMUVpOTyfL_Sgb2fYmeQzKQeng=" },
+      { name: "Mushroom", img: "https://media.istockphoto.com/id/185326568/photo/crimini-mushrooms-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=FeK7mI_C-VqtxsCNU7wIjxnAM24SbpR-HHRCSxXEEFE=" },
+      { name: "Kaddu (Pumpkin)", img: "https://media.istockphoto.com/id/869083884/photo/nutmeg-pumpkin-isolated-on-white.jpg?s=612x612&w=0&k=20&c=OTkl_rkJfJWXBqSfrbkpEoMNonCNHBwAEqv8ub8dl9I=" },
+      { name: "Kachha Kela (Raw Banana)", img: "https://media.istockphoto.com/id/183771746/photo/unripe-bananas.jpg?s=612x612&w=0&k=20&c=i1i4RkW4NpM8iARlEJtlvIuZQLG_zFuzOV9Iem2q3sQ=" },
+      
+      { name: "Pudina (Mint Leaves)", img: "https://media.istockphoto.com/id/1414441955/photo/mint-leaves-on-white-background.jpg?s=612x612&w=0&k=20&c=K5yxI_Cgph40fYK5ks7ZmTuOvADDDPHD7deXjbIJsco=" },
+      { name: "Curry Patta", img: "https://media.istockphoto.com/id/858326874/photo/curry-leaf.jpg?s=612x612&w=0&k=20&c=XPhZiCUwPK5UGYzsTXu0CpCA9KPSNLEQ2gE50Mh_zjI=" },
+      { name: "Lahsun (Garlic)", img: "https://media.istockphoto.com/id/2058002828/photo/garlic-bulb-and-clove-isolated-garlic-bulbs-with-cloves-on-white-background-white-garlic-bulb.jpg?s=612x612&w=0&k=20&c=QmHcpqB2c5T_av195UeI8d0InVpXwLuoiHoccwaHZkE=" },
+      { name: "Adrak (Ginger)", img: "https://media.istockphoto.com/id/1269132686/photo/fresh-ginger-roots-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=tWC9FBjPycX-cRQby2NuQBuXS-wU2GUrKuafmRLqEXI=" },
+      { name: "Kaccha Aam (Raw Mango)", img: "https://media.istockphoto.com/id/178075595/photo/fresh-green-mango.jpg?s=612x612&w=0&k=20&c=UxNX8FA07zUA0w9y0JiCxFGhj57Am8n4lBeZc67Xs8U=" },
+      
+    ];
+
+    const vegGrid = document.getElementById('vegGrid');
+    const quantities = {};
+    const unitPrice = 10; // ₹10 per 250g
+
+    vegetables.forEach((veg, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const id = i + 1;
+
+      card.innerHTML = `
+        <img src="${veg.img}" alt="${veg.name}">
+        <h2>${veg.name}</h2>
+        <div class="controls">
+          <button onclick="changeQty(${id}, -250)">-</button>
+          <span id="qty-${id}">0g</span>
+          <button onclick="changeQty(${id}, 250)">+</button>
+        </div>
+        <div class="price" id="price-${id}">₹0</div>
+        <button class="add-btn" onclick="addToCart('${veg.name}', ${id})">Add</button>
+      `;
+
+      vegGrid.appendChild(card);
+    });
+
+    function changeQty(id, delta) {
+      if (!quantities[id]) quantities[id] = 0;
+      quantities[id] = Math.max(0, quantities[id] + delta);
+      document.getElementById(`qty-${id}`).innerText = `${quantities[id]}g`;
+      const price = (quantities[id] / 250) * unitPrice;
+      document.getElementById(`price-${id}`).innerText = `₹${price}`;
+    }
+
+    function addToCart(name, id) {
+      const qty = quantities[id] || 0;
+      const price = (qty / 250) * unitPrice;
+      alert(`${name} added to cart\nQuantity: ${qty}g\nPrice: ₹${price}`);
+    }
+  </script>
+</body>
+</html>

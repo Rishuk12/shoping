@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veg, Phool & Fruits Selector</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFF5E6;
+    }
+    h1 {
+      text-align: center;
+      color: #1C482E;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .back-btn, .cart-btn {
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    .card img {
+      width: 100%;
+      border-radius: 10px;
+      height: 120px;
+      object-fit: cover;
+    }
+    .controls {
+      margin: 10px 0;
+    }
+    .controls button, .add-btn, .place-order {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .add-btn { width: 100%; margin-top: 8px; }
+    .cart-popup {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      width: 320px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+      padding: 16px;
+      display: none;
+      z-index: 999;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+    }
+    .cart-item button {
+      background: red;
+      color: white;
+      border-radius: 50%;
+      border: none;
+      width: 20px;
+      height: 20px;
+    }
+    .address-form input {
+      width: 100%;
+      margin: 4px 0;
+      padding: 6px;
+    }
+    .order-history {
+      margin-top: 30px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .success-popup {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #d4edda;
+      color: #155724;
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="back-btn" onclick="history.back()">← Back</div>
+  <div class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+</div>
+
+<h1>Select Vegetables, Puja Flowers & Fruits</h1>
+<button onclick="getLocation()">📍 Use My Location</button>
+
+<div class="grid" id="vegGrid"></div>
+
+<div class="cart-popup" id="cartPopup">
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <p><strong>Total: ₹<span id="cartTotal">0</span></strong></p>
+  <h3>Delivery Address</h3>
+  <div class="address-form">
+    <input placeholder="Full Name" id="fullName" />
+    <input placeholder="Mobile Number" id="mobile" />
+    <input placeholder="Address" id="address" />
+    <input placeholder="Pin Code" id="pin" />
+    <input placeholder="Area" id="area" />
+    <input placeholder="Landmark" id="landmark" />
+    <input placeholder="State" id="state" />
+  </div>
+  <button class="place-order" onclick="placeOrder()">Place Order</button>
+</div>
+
+<div class="success-popup" id="successPopup">🎉 Order Placed Successfully!</div>
+
+<div class="order-history">
+  <h3>Order History</h3>
+  <div id="orderHistory"></div>
+</div>
+
+<script>
+  const items = [
+    { name: "Red Potato", price: 12, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg", type: "veg" },
+    { name: "White Potato", price: 12, img: "https://media.istockphoto.com/id/479903950/photo/new-potato-isolated.jpg", type: "veg" },
+    { name: "Onion", price: 12, img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion.jpg", type: "veg" },
+    { name: "Banana", price: 30, img: "https://media.istockphoto.com/id/636739634/photo/banana.jpg", type: "fruit" },
+    { name: "Kinnaur Apple", price: 15, img: "https://media.istockphoto.com/id/1141708425/photo/red-apples.jpg", type: "fruit" },
+    { name: "Marigold Orange", price: 5, img: "https://media.istockphoto.com/id/493183382/photo/marigold-flower.jpg", type: "phool" }
+  ];
+
+  const allowedPincodes = ["800001", "800003", "800020","800013","800010","804453","800026"];
+  const cart = [];
+  const quantities = {};
+  const vegGrid = document.getElementById('vegGrid');
+  const cartItems = document.getElementById('cartItems');
+  const cartCount = document.getElementById('cart-count');
+  const cartTotal = document.getElementById('cartTotal');
+  const cartPopup = document.getElementById('cartPopup');
+  const successPopup = document.getElementById('successPopup');
+  const orderHistory = document.getElementById('orderHistory');
+
+  items.forEach((item, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${item.img}" />
+      <h2>${item.name}</h2>
+      <div class="controls">
+        <button onclick="changeQty(${i}, -1)">-</button>
+        <span id="qty-${i}">0 ${item.type === "phool" ? "pc" : "kg"}</span>
+        <button onclick="changeQty(${i}, 1)">+</button>
+      </div>
+      <div>₹${item.price} / ${item.type === "phool" ? "pc" : "kg"}</div>
+      <button class="add-btn" onclick="addToCart(${i})">Add</button>
+    `;
+    vegGrid.appendChild(card);
+  });
+
+  function changeQty(i, delta) {
+    const item = items[i];
+    const step = item.type === "phool" ? 1 : 1;
+    quantities[i] = Math.max(0, (quantities[i] || 0) + delta * step);
+    document.getElementById(`qty-${i}`).innerText = `${quantities[i]} ${item.type === "phool" ? "pc" : "kg"}`;
+  }
+
+  function addToCart(i) {
+    const qty = quantities[i] || 0;
+    if (qty === 0) return;
+    const item = items[i];
+    const exists = cart.find(ci => ci.index === i);
+    if (exists) {
+      exists.qty += qty;
+    } else {
+      cart.push({ index: i, qty });
+    }
+    quantities[i] = 0;
+    document.getElementById(`qty-${i}`).innerText = `0 ${item.type === "phool" ? "pc" : "kg"}`;
+    updateCart();
+  }
+
+  function updateCart() {
+    cartItems.innerHTML = '';
+    let total = 0;
+    cart.forEach((c, i) => {
+      const item = items[c.index];
+      const price = c.qty * item.price;
+      total += price;
+      cartItems.innerHTML += `
+        <div class="cart-item">
+          <span>${item.name} - ${c.qty}${item.type === "phool" ? "pc" : "kg"} - ₹${price}</span>
+          <button onclick="removeFromCart(${i})">x</button>
+        </div>
+      `;
+    });
+    cartCount.innerText = cart.length;
+    cartTotal.innerText = total.toFixed(2);
+  }
+
+  function removeFromCart(i) {
+    cart.splice(i, 1);
+    updateCart();
+  }
+
+  function toggleCart() {
+    cartPopup.style.display = cartPopup.style.display === "block" ? "none" : "block";
+  }
+
+  function getLocation() {
+    navigator.geolocation.getCurrentPosition(showPosition, () => {
+      alert("Location permission denied.");
+    });
+  }
+
+  function showPosition(pos) {
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+      .then(res => res.json())
+      .then(data => {
+        const addr = data.address;
+        document.getElementById("address").value = data.display_name || '';
+        document.getElementById("state").value = addr.state || '';
+        document.getElementById("area").value = addr.suburb || addr.city || '';
+        document.getElementById("pin").value = addr.postcode || '';
+        document.getElementById("landmark").value = addr.neighbourhood || '';
+      });
+  }
+
+  function placeOrder() {
+    const name = document.getElementById("fullName").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const pincode = document.getElementById("pin").value.trim();
+
+    if (!name || !mobile || !address || !pincode) {
+      alert("Please fill all address details.");
+      return;
+    }
+
+    if (!allowedPincodes.includes(pincode)) {
+      alert("Sorry, service not available at this PIN code.");
+      return;
+    }
+
+    const now = new Date().toLocaleString();
+    const orderList = cart.map(c => {
+      const item = items[c.index];
+      return `${item.name} (${c.qty}${item.type === "phool" ? "pc" : "kg"})`;
+    }).join(", ");
+
+    orderHistory.innerHTML += `
+      <div style="padding:8px; margin:6px 0; background:#f0f0f0;">
+        <b>${now}</b><br/>Items: ${orderList}<br/>Total: ₹${cartTotal.innerText}<br/>
+        Status: <span style="color:green">Confirmed</span>
+      </div>
+    `;
+
+    cart.length = 0;
+    updateCart();
+    cartPopup.style.display = 'none';
+    successPopup.style.display = 'block';
+    setTimeout(() => successPopup.style.display = 'none', 3000);
+  }
+</script>
+
+</body>
+</html>

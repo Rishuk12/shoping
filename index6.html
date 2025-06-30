@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veg, Phool & Fruits Selector</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFF5E6;
+    }
+    h1 {
+      text-align: center;
+      color: #1C482E;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    .back-btn {
+      display: inline-block;
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      max-height: 140px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      color: #1C482E;
+      margin: 8px 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .controls button {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .controls button:hover {
+      background: #2c5f2d;
+    }
+    .price {
+      font-size: 0.9rem;
+      color: #1C482E;
+      margin: 4px 0;
+    }
+    .add-btn {
+      background: #1C482E;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .add-btn:hover {
+      background: #3C803F;
+    }
+    @media (max-width: 480px) {
+      .card img { max-height: 120px; }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-btn" onclick="history.back()">← Back</div>
+  <h1>Select Vegetables, Puja Flowers & Fruits</h1>
+
+  <div class="grid" id="vegGrid"></div>
+
+  <h1>🛒 Select Your Items</h1>
+
+  <div class="section-title">🌼 Puja Phool (₹ per piece)</div>
+  <div class="grid" id="flowerGrid"></div>
+
+  <div class="section-title">🍎 Fruits (₹ per kg)</div>
+  <div class="grid" id="fruitGrid"></div>
+
+  <div class="total" id="totalDisplay">Total: ₹0</div>
+
+  <script>
+    const items = [
+      // ✅ Vegetables (500g)
+      //{ name: "Potato", price: 10, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg", type: "veg" },
+      //{ name: "Tomato", price: 12, img: "https://media.istockphoto.com/id/831570242/photo/three-juicy-red-tomatoes.jpg", type: "veg" },
+      
+      
+      { name: "Red Potato (Aloo) ",price:12, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg?s=612x612&w=0&k=20&c=wzcLLI5sS7U9qafpsTdlFK0jUV3SI-A8chmNBwXKRkc=" ,type:"veg"},
+      { name: "White Potato (Aloo)",price:12, img: "https://media.istockphoto.com/id/479903950/photo/new-potato-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Npy46xC15Vipx35PDek1Xh3gW3VsI8HWieHEES4HLNY=" ,type:"veg"},
+      { name: "Pyaaz (Onion)",price:12 ,img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion-on-for-boarding-much-pommels.webp?a=1&b=1&s=612x612&w=0&k=20&c=LPEGVz2fmXuVjh-_gsL7-NyQHoAW654J1ihwZOzm06s=",type:"veg" },
+      { name: "Tamatar (Tomato)",price:12, img: "https://media.istockphoto.com/id/831570242/photo/three-juicy-red-tomatoes-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=bBrjZsWY4eg90OpA2S6cO3psGR1TFx8f4L0HAmIQqm4=",type:"veg" },
+      { name: "Lauki (Bottle Gourd)",price:12, img: "https://media.istockphoto.com/id/1481121489/photo/bottle-gourd.jpg?s=612x612&w=0&k=20&c=at9YKjIS2pc94LdTmioVBGO6-W69i_C5L20C55eb3qg=",type:"veg" },
+      { name: "Tori (Ridge Gourd)",price:12, img: "https://media.istockphoto.com/id/490025896/photo/fresh-loofah.jpg?s=612x612&w=0&k=20&c=yypocElDvpX16k7kDE0EUjyC7z_uZltvBP8uQU_9iMc=",type:"veg" },
+      { name: "Bhindi (Lady Finger)",price:12, img: "https://media.istockphoto.com/id/2149005541/photo/fresh-green-okra-isolated-on-white-background-healthy-vegetables.jpg?s=612x612&w=0&k=20&c=zWTwhCkPrusDH_zo-ZppKQOZCV34Wsegb14_uvHotBU=" ,type:"veg"},
+      { name: "Baingan - Long",price:12, img: "https://media.istockphoto.com/id/486633634/photo/large-eggplant-on-white-background.jpg?s=612x612&w=0&k=20&c=ohM7jIL33o76GEtlU2Uol_9NhtxL-1IZD5h1ZFA0FSI=",type:"veg" },
+      { name: "Baingan - Round",price:12, img: "https://media.istockphoto.com/id/1186292631/photo/original-shape-eggplant-fruit-on-a-white-background.jpg?s=612x612&w=0&k=20&c=i4m-pBlYMJKOLyMDZm8lDWwnq0XLTf6TNRrwTI-SN3c=",type:"veg" },
+      { name: "Baingan - round",price:12, img: "https://media.istockphoto.com/id/1253741876/photo/eggplant-or-aubergine-vegetable-on-white-background.jpg?s=612x612&w=0&k=20&c=-LWaw663UvH6IHgCyd0svv_akxAkYJB-DeC-lVA77H0=" ,type:"veg"},
+      { name: "Baingan - green",price:12, img: "https://media.istockphoto.com/id/471674583/photo/eggplant.jpg?s=612x612&w=0&k=20&c=fD8Wt1kpy62WZZpkAzDTvGP1AHqCqFZPhVuKZen9H20=",type:"veg" },
+      { name: "Shimla Mirch (Capsicum)",price:12, img: "https://media.istockphoto.com/id/1089613296/photo/indian-green-peppers.jpg?s=612x612&w=0&k=20&c=-wXlLtGIHGno3bXChePGp0o4N33e6j4pYERpzClrZdI=" ,type:"veg"},
+
+      { name: "Shimla Mirch (Capsicum)",price:12, img: "https://media.istockphoto.com/id/628582556/photo/red-bell-pepper.jpg?s=612x612&w=0&k=20&c=fJfVoIiAR0GcuDpbqsTNJNZpV7snvfeLtXCWdKGRtXU=",type:"veg" },
+      { name: "Shimla Mirch (Capsicum)",price:12, img: "https://media.istockphoto.com/id/925190112/photo/yellow-bell-peppers-on-white-background.jpg?s=612x612&w=0&k=20&c=LZVSDPOMGPg3PScLfp0CgdIwfPCRcfhdcSuN4cJOY38=",type:"veg" },
+      { name: "Karela (Bitter Gourd)",price:12, img: "https://media.istockphoto.com/id/1266443111/photo/bitter-melon-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=vthnH1hZUjPZNBgQN4QdgJWC_VfoZJP_cbNy37MmohU=",type:"veg" },
+      { name: "Patta Gobhi (Cabbage)",price:12, img: "https://media.istockphoto.com/id/183893293/photo/cabbage.jpg?s=612x612&w=0&k=20&c=BwSxCJCGQYLhGacneRl_0LfL-rB4qrWpyQASPrhFCSA=",type:"veg" },
+      { name: "Phool Gobhi (Cauliflower)",price:12, img: "https://media.istockphoto.com/id/172868533/photo/a-cauliflower-with-foliage-isolated-on-a-white-background.jpg?s=612x612&w=0&k=20&c=Gq5DdoIaUNQ1tT5zG41Ex1Eq03c6sN_HduTVpA6VNB8=",type:"veg" },
+      { name: "Matar (Green Peas)",price:12, img: "https://media.istockphoto.com/id/155431404/photo/green-pea.jpg?s=612x612&w=0&k=20&c=loFtZjD50IXlUuwXS11ovxLLu-ZxyySyR88GoPccnq4=" ,type:"veg"},
+      { name: "Gajar (orange Carrot)",price:12, img: "https://media.istockphoto.com/id/619252960/photo/carrot.jpg?s=612x612&w=0&k=20&c=C-PlZ2oHW2SDCkaZXn8rg1UFdeF5ismwiy3v7uQRVKE=",type:"veg" },
+      { name: "gajar(red carrot)",price:12, img: "https://media.istockphoto.com/id/1448517342/photo/fresh-vegetable-carrots-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=P7DeYtTDIw0EMzqMLZo_c3L7QbFULw2ug_DWJf04wvk=",type:"veg" },
+      { name: "Chukandar (Beetroot)",price:12, img: "https://media.istockphoto.com/id/2153935146/photo/red-beetroot-on-stem-with-green-leaves-and-beet-cross-section-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=-jadYwVUlFFJ13CNwcTK4jSgCT1tb7Bf_Wt9BbsXTpc=" ,type:"veg"},
+      { name: "Methi (Fenugreek)",price:12, img: "https://media.istockphoto.com/id/494568564/photo/fresh-green-fenugreek-leaves-on-white-background.jpg?s=612x612&w=0&k=20&c=PXoW0zaeCGgAP1w7RqJvsHiqDIcfImbdu-s7rfo0Rik=",type:"veg" },
+      { name: "Palak (Spinach)",price:12, img: "https://media.istockphoto.com/id/1006196472/photo/bunch-of-spinach-leaves-on-isolated-white-background.jpg?s=612x612&w=0&k=20&c=OAIswtUC1aMNDwtMEFIaZv6fSIftsoAV-cgJZSGLJ7A=" ,type:"veg"},
+      { name: "Sarson (Mustard Leaves)",price:12, img: "https://media.istockphoto.com/id/1298820852/photo/sarson-leaves-saag-of-brown-or-chinese-black-mustard-rai-raya-or-raai-also-known-as-brassica.jpg?s=612x612&w=0&k=20&c=coHjV9xRwh56RhNhQD0ou9BOX8ZTBS_aVLSdcHr9E4Y=",type:"veg" },
+      { name: "Kathal (Jackfruit)",price:12, img: "https://media.istockphoto.com/id/1490812553/photo/closeup-jackfruit-with-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=PYvmzXYuEKpK0C8OeH-NOECdNn-6AK3Xi3pFvwdlIrI=",type:"veg" },
+      { name: "Parwal (Pointed Gourd)",price:12, img: "https://media.istockphoto.com/id/179239559/photo/pointed-gourd-or-potol.jpg?s=612x612&w=0&k=20&c=gPiUoxNUsQPZjro_GTAr7P2JOxlnKKVgCr1fBgRiQ7s=" ,type:"veg"},
+      { name: "Shalgam (Turnip)",price:12, img: "https://media.istockphoto.com/id/1465228611/photo/kohlrabi-vegetable.jpg?s=612x612&w=0&k=20&c=5ldmtsHV3RiT746LyK2nBxy2j1WJ9OYsSWjVIuwTENw=",type:"veg" },
+      { name: "Mooli (Radish)",price:12, img: "https://media.istockphoto.com/id/91608070/photo/large-japanese-daikon-radish-or-mooli.jpg?s=612x612&w=0&k=20&c=3lFr6V-JZ9idnw9H5CwB_CDXBsS-QPN57ttCKU114WQ=" },
+      { name: "Spring Onion",price:12, img: "https://media.istockphoto.com/id/145122488/photo/a-bunch-of-fresh-spring-onions.jpg?s=612x612&w=0&k=20&c=-5dn2HmcPYbsNuHKH9ne4Es_Tm_CsGrMFIAVBLDBCDo=",type:"veg" },
+      { name: "Sweet Corn",price:12, img: "https://media.istockphoto.com/id/841408966/photo/corn-on-the-cob-kernels-peeled-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=v76mGkmlRYhLo98AMVQbpCpYwDc-1OGv7pI96aHc8zA=",type:"veg" },
+      { name: "French Beans",price:12, img: "https://media.istockphoto.com/id/140236373/photo/portion-of-uncooked-green-french-beans.jpg?s=612x612&w=0&k=20&c=tGhxoV_eu72htyKDZk1ECFHi1eZJVi33hZ_qDjKnywA=",type:"veg" },
+      { name: "Nimbu (Lemon)",price:12, img: "https://media.istockphoto.com/id/2154842083/photo/close-up-of-a-sliced-fresh-green-organic-lemon.jpg?s=612x612&w=0&k=20&c=bZ_h399knoJFr7FeBDlKEUpOqbVMngeeMH0cLOkAl78=",type:"veg" },
+      { name: "Dhania (Coriander)",price:12, img: "https://media.istockphoto.com/id/155098529/photo/coriander.jpg?s=612x612&w=0&k=20&c=kqN-POfQsSdJITqUisNqdo7EIi1I5dmzjm3ncAuweLw=",type:"veg" },
+      { name: "Hari Mirch (Green Chilli)",price:12, img: "https://media.istockphoto.com/id/1394737507/photo/green-hot-chili-peppers-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=8WPSxHchpOtdfWi3N35OrP6_3OPuThEKND0nUyT9apg=",type:"veg" },
+      { name: "deshi Kheera (Cucumber)",price:12, img: "https://media.istockphoto.com/id/171321660/photo/gherkin-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=G_W39fNvKTKorp-838TIxJlb4Qs_EPwyT_vQjZLt_cA=" ,type:"veg"},
+      { name: "kheera (cucumber)",price:12, img: "https://media.istockphoto.com/id/967491012/photo/whole-with-slice-cucumber-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Kmeq5UlXegj7sQEGicTWbxqngB3j57JZBmOM-P_nTwU=",type:"veg" },
+      { name: "Zucchini",price:12, img: "https://media.istockphoto.com/id/471152113/photo/two-courgettes-stacked-with-three-slices-beside-them.jpg?s=612x612&w=0&k=20&c=uOAwaRXLtohHdJH97HW7AhsIIdzPiD6s_ZMlWbMDJY8=" },
+      { name: "Broccoli",price:12, img: "https://media.istockphoto.com/id/183300149/photo/broccoli.jpg?s=612x612&w=0&k=20&c=ryP5FrMKK8ejTMX04iMUVpOTyfL_Sgb2fYmeQzKQeng=" ,type:"veg"},
+      { name: "Mushroom",price:12, img: "https://media.istockphoto.com/id/185326568/photo/crimini-mushrooms-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=FeK7mI_C-VqtxsCNU7wIjxnAM24SbpR-HHRCSxXEEFE=",type:"veg" },
+      { name: "Kaddu (Pumpkin)",price:12, img: "https://media.istockphoto.com/id/869083884/photo/nutmeg-pumpkin-isolated-on-white.jpg?s=612x612&w=0&k=20&c=OTkl_rkJfJWXBqSfrbkpEoMNonCNHBwAEqv8ub8dl9I=" ,type:"veg"},
+      { name: "Kachha Kela (Raw Banana)",price:12, img: "https://media.istockphoto.com/id/183771746/photo/unripe-bananas.jpg?s=612x612&w=0&k=20&c=i1i4RkW4NpM8iARlEJtlvIuZQLG_zFuzOV9Iem2q3sQ=",type:"veg" },
+      
+      { name: "Pudina (Mint Leaves)",price:12, img: "https://media.istockphoto.com/id/1414441955/photo/mint-leaves-on-white-background.jpg?s=612x612&w=0&k=20&c=K5yxI_Cgph40fYK5ks7ZmTuOvADDDPHD7deXjbIJsco=",type:"veg" },
+      { name: "Curry Patta",price:12, img: "https://media.istockphoto.com/id/858326874/photo/curry-leaf.jpg?s=612x612&w=0&k=20&c=XPhZiCUwPK5UGYzsTXu0CpCA9KPSNLEQ2gE50Mh_zjI=",type:"veg" },
+      { name: "Lahsun (Garlic)",price:12, img: "https://media.istockphoto.com/id/2058002828/photo/garlic-bulb-and-clove-isolated-garlic-bulbs-with-cloves-on-white-background-white-garlic-bulb.jpg?s=612x612&w=0&k=20&c=QmHcpqB2c5T_av195UeI8d0InVpXwLuoiHoccwaHZkE=",type:"veg" },
+      { name: "Adrak (Ginger)",price:12, img: "https://media.istockphoto.com/id/1269132686/photo/fresh-ginger-roots-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=tWC9FBjPycX-cRQby2NuQBuXS-wU2GUrKuafmRLqEXI=" ,type:"veg"},
+      { name: "Kaccha Aam (Raw Mango)",price:12, img: "https://media.istockphoto.com/id/178075595/photo/fresh-green-mango.jpg?s=612x612&w=0&k=20&c=UxNX8FA07zUA0w9y0JiCxFGhj57Am8n4lBeZc67Xs8U=" ,type:"veg"},
+      
+
+
+      // ✅ Fruits (500g)
+      //{ name: "Apple", price: 30, img: "https://media.istockphoto.com/id/178418735/photo/red-apple.jpg", type: "fruit" },
+      //{ name: "Banana", price: 15, img: "https://media.istockphoto.com/id/173242750/photo/bananas.jpg", type: "fruit" },
+      //{ name: "Mango", price: 25, img: "https://media.istockphoto.com/id/466175186/photo/mango.jpg", type: "fruit" },
+
+      { name: "Banana", price: 30, img: "https://media.istockphoto.com/id/636739634/photo/banana.jpg?s=612x612&w=0&k=20&c=pO0985tQi1LpWRlWqpRvbab8S5yxgnEOVcs5CHIlcDE=", type: "fruit" },
+      { name: "Kinnaur Apple ", price: 15, img: "https://media.istockphoto.com/id/1141708425/photo/red-apples.jpg?s=612x612&w=0&k=20&c=tAlaTEx0l-dhxB4ETtIozc8B8bOhP0kDbGzVOKqGmEw=", type: "fruit" },
+      { name: "kashmari Apple", price: 25, img: "https://media.istockphoto.com/id/121274214/photo/best-red-apple.jpg?s=612x612&w=0&k=20&c=8iKCYqajHYLFkyzDWHY1n0ut70hIHQQHfvQNBEFw8ls=", type: "fruit" },
+      { name: "Malda Mango(मालदा) ", price: 30, img: "https://media.istockphoto.com/id/489984262/photo/mango-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=nZcYj_qP54dat2mFd4MG7N7bXVarODljdiJpmqXEbKk=", type: "fruit" },
+      { name: "Zardalu (ज़र्दालू) –", price: 15, img: "https://media.istockphoto.com/id/1419305183/photo/mango-fruit.jpg?s=612x612&w=0&k=20&c=D4r68Mm0A_a2MA8a0OGt2D60kUjTH0Ooq_LhcUO70zw=", type: "fruit" },
+      { name: "Bombaiya (बंबईया)", price: 25, img: "https://media.istockphoto.com/id/533007379/photo/green-mango-isolated-on-a-white-background.jpg?s=612x612&w=0&k=20&c=rxh3_8m0ILdGGwlZYkShq69GW8JT1PAjL9dB6_nLzNI=", type: "fruit" },
+      { name: "Papaya (पपीता)", price: 30, img: "https://media.istockphoto.com/id/864053288/photo/whole-and-half-of-ripe-papaya-fruit-with-seeds-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=hJ5DpNTt0oKjZMIHYV6gUHTntB2zIs_78dPKiuDUXgE=", type: "fruit" },
+      { name: "Red Guava", price: 15, img: "https://media.istockphoto.com/id/1221000031/photo/isolated-pink-guava-fruits.jpg?s=612x612&w=0&k=20&c=tsGe2s8yuH6uEYeXFpg9m-gB5d70jvtUclP9g-px1kQ=", type: "fruit" },
+      { name: "White Guava", price: 25, img: "https://media.istockphoto.com/id/1449307851/photo/fresh-guava-fruit-with-green-leaf-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Irlwwp1THrQAc6_TDRRZJXaVdB0bdmo6o8b3D7yZg80=", type: "fruit" },
+      { name: "Watermelon (तरबूज)", price: 30, img: "https://media.istockphoto.com/id/1321448019/photo/ripe-juicy-watermelon-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Ev7glJxdFDqd-qIrpZDRCcp2QOVd4v0UmiblsYccNUo=", type: "fruit" },
+      { name: "Watermelon (तरबूज)", price: 15, img: "https://media.istockphoto.com/id/2205649393/photo/watermelon-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=yNmLArzlPb1min_FeQTXzu-jO0jv_64_aIbO_2dOJhc=", type: "fruit" },
+      { name: "Muskmelon (खरबूजा)", price: 25, img: "https://media.istockphoto.com/id/910127132/photo/cantaloupe-melon.jpg?s=612x612&w=0&k=20&c=6ZEbJTksIL7xwwLyop99fhhxCQK8-f368GrUjlECfkw=", type: "fruit" },
+      { name: "Orange (संतरा) ", price: 25, img: "https://media.istockphoto.com/id/172146497/photo/one-single-tangerine-isolated-on-a-white-background.jpg?s=612x612&w=0&k=20&c=YXkl4RcuZq4dhHyq5tm2RjpmKpw6zLpPLE9fUdkw0io=", type: "fruit" },
+      { name: "Mosambi (मौसमी)", price: 25, img: "https://media.istockphoto.com/id/854796764/photo/tangerine-fruit-in-white-scene.jpg?s=612x612&w=0&k=20&c=gv6y9k5uVAo91le3I73pb4TRU56mHnQX7auRFZrHyx4=", type: "fruit" },
+      { name: "Pomegranate (अनार)", price: 25, img: "https://media.istockphoto.com/id/170110715/photo/pomegranate.jpg?s=612x612&w=0&k=20&c=_GorcNvK9aFgGcRTApw3Zs2lfcQBS1ujjsLsU5sDSTI=", type: "fruit" },
+      { name: "Coconut (नारियल) ", price: 30, img: "https://media.istockphoto.com/id/1291208071/photo/green-young-coconut-isolated-on-white.jpg?s=612x612&w=0&k=20&c=9pCc0nHEtURSdIzARZBTEbhdPCLsfUgoWBkKmqvMM3E=", type: "fruit" },
+      { name: "Pear (नाशपाती)", price: 15, img: "https://media.istockphoto.com/id/173242750/photo/bananas.jpg", type: "fruit" },
+      { name: "Green Grapes (हरे अंगूर)", price: 25, img: "https://media.istockphoto.com/id/475058135/photo/fresh-green-grapes-with-drops-isolated-on-white.jpg?s=612x612&w=0&k=20&c=JZ36ALLNOfGU3Y_ye911mImKjkyWlLIs83770kuFsik=", type: "fruit" },
+      { name: "Red Grapes (लाल अंगूर)", price: 30, img: "https://media.istockphoto.com/id/173903426/photo/red-grapes-on-the-vine-on-a-white-background.jpg?s=612x612&w=0&k=20&c=ym3GJUXVm2XskP1eYWqQnxaxMDQuzGsLiF8Tycccegw=", type: "fruit" },
+      { name: "Black Grapes (काले अंगूर)", price: 15, img: "https://media.istockphoto.com/id/502125050/photo/purple-grape-with-green-leaf.jpg?s=612x612&w=0&k=20&c=b6auFCui99MFrR4J8tZHkgtjA3tFYJyiwfduVAkaX1U=", type: "fruit" },
+      { name: "Custard Apple (सीताफल)", price: 25, img: "https://media.istockphoto.com/id/1501751612/photo/sugar-apple-or-custard-apple-green-leaf-isolated-on-white-background-healthy-fruit.jpg?s=612x612&w=0&k=20&c=oemsGYnE4npWbOoHHl6WMIX015BNXEpMiYXsZaPu9JY=", type: "fruit" },
+      { name: "kiwi", price: 30, img: "https://media.istockphoto.com/id/186858235/photo/kiwifruit.jpg?s=612x612&w=0&k=20&c=q21AIUK2hxqjLh1GSxAYhYGT9y_NFY2-_00O4E7bfmI=", type: "fruit" },
+      { name: "Dragon Fruit (White Flesh – Pink Skin)", price: 15, img: "https://media.istockphoto.com/id/1257511771/photo/dragon-fruit-isolated-on-white.jpg?s=612x612&w=0&k=20&c=EojMLRWx3YxTSUatFKPLmJcgcww12GXwWPWjfTVRYus=", type: "fruit" },
+      { name: "Dragon fruit (Red Flesh – Pink Skin)", price: 25, img: "https://media.istockphoto.com/id/2198068111/photo/close-up-a-fresh-dragon-fruit-isolated.jpg?s=612x612&w=0&k=20&c=X-7oLfukT-ezxEy-3SSPn1FnFlsts0WdSuIOM5a5p6I=", type: "fruit" },
+
+
+
+
+      // ✅ Puja Flowers (pieces)
+      { name: "Marigold", price: 5, img: "https://media.istockphoto.com/id/493183382/photo/marigold-flower.jpg?s=612x612&w=0&k=20&c=FdewsGC4WmV-nNeBfMkuc__H2fyWeFqEs0_pxaGx7SA=", type: "phool" },
+      { name: "Marigold", price: 8, img: "https://media.istockphoto.com/id/885817678/photo/marigold-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=A0XLDxtYrAPQPPstb_lT0dtrYde7LfcHcH0cdRJ7xTU=", type: "phool" },
+      { name: "Lotus", price: 10, img: "https://media.istockphoto.com/id/1559682249/photo/beautiful-pink-fresh-lotus-isolated-in-the-white-background.jpg?s=612x612&w=0&k=20&c=_5FF3rYm9hWXcbVFK83SD8kFBOIwUut-HT6Q23iTsZ4=", type: "phool" },
+      
+      { name: "Rose", price: 3, img: "https://media.istockphoto.com/id/157330341/photo/a-full-single-red-rose-on-a-white-background.jpg?s=612x612&w=0&k=20&c=puhfwDAs2ZvIg0z2CCTUOH9RCsJFz7c3rhP-4yxDDYw=",type:"phool" },
+      { name: "Jasmine", price: 1, img: "https://media.istockphoto.com/id/1130649208/photo/jasmine.jpg?s=612x612&w=0&k=20&c=f0gPfHLq9aep9phLXaCh3jgtAq5LxVN8iQ00LNvkTm8=" , type: "phool"},
+      { name: "Lotus", price: 5, img: "https://media.istockphoto.com/id/1346929707/photo/closeup-of-religious-flower-of-prosopis-cineraria-also-known-as-ghaf-or-shami-isolated-over.jpg?s=612x612&w=0&k=20&c=MH75tphX6NpPSrlKBTZTC2w6fWKTn_vGvLeUL_vRkaw=", type: "phool" },
+      { name: "Hibiscus", price: 4, img: "https://media.istockphoto.com/id/182703296/photo/closeup-of-red-hibiscus-on-white-background.jpg?s=612x612&w=0&k=20&c=kwkTTozV9I_9YaDMDPgAH3Wkr-bxFBwZr6XorxZqwSg=", type: "phool" },
+      { name: "Champa", price: 2, img: "https://media.istockphoto.com/id/2214604927/photo/plumeria-or-frangipani-flowers.jpg?s=612x612&w=0&k=20&c=iYWeRwyG3N7yja68jcEeOgy97Ek1YTqMqwF705Rk1BQ=", type: "phool" },
+      
+      { name: "belpatra", price: 2, img:"https://media.istockphoto.com/id/1391621064/photo/bael-leaves.jpg?s=612x612&w=0&k=20&c=EVG3KFKls02UAzx_prxLKkxhX04H4Jg9cdocxgqzwr0=", type: "phool" },
+      { name: "Tulsi leaf(तुलसी)", price: 3, img: "https://media.istockphoto.com/id/1334792657/photo/holy-basil-tulasi.jpg?s=612x612&w=0&k=20&c=f0jAWuglz_m3y60sMyQveg9RDS4gqvsMzcOlYDNvIrQ=", type: "phool" },
+        { name: "Kaner", price: 2, img: "https://media.istockphoto.com/id/1207414536/photo/top-view-green-bermuda-grass-lawn-grass-or-wire-grass-in-pot-isolated-on-white.jpg?s=612x612&w=0&k=20&c=wPoF9iuNRruZNpKY9oMZQosaKl4dg7dQGVQldFotYg8=", type: "phool" },
+       { name: "Mango leaf", price: 1, img: "https://media.istockphoto.com/id/689595490/photo/mango-leaves-on-white-background.jpg?s=612x612&w=0&k=20&c=XOBsAcbGL0uE1m_Ikh_fn8LoeC6GS57miK-UuhKqlDE=" , type: "phool"},
+        { name: "Banana leaf", price: 2, img: "https://media.istockphoto.com/id/466296394/photo/fresh-whole-banana-leaf.jpg?s=612x612&w=0&k=20&c=_3HnVzWWQobDlJbaCRO1LEA2Jck5c9RIaBM3K5tTrM8=", type: "phool" },
+       { name: "Cow Urine (गौमूत्र)", price: 1, img: "https://media.istockphoto.com/id/1397693514/photo/glass-bottle-isolated-on-white.jpg?s=612x612&w=0&k=20&c=SMq2IJOFaN2O9TgnCqHEQxE3d019EhAmMMkgd3KNQOE=", type: "phool" },
+       { name: "Dry cow dung", price: 2, img: "https://media.istockphoto.com/id/524179074/photo/pellet-for-heating.jpg?s=612x612&w=0&k=20&c=jKIpU5QzwuJRc1BR3MJu4Ecoh6_qcyEfdXY_rCBxaRg=", type: "phool" },
+      { name: "cow dung", price: 2, img: "https://media.istockphoto.com/id/1738805853/photo/dry-cow-excrement-isolated-close-top-view.jpg?s=612x612&w=0&k=20&c=KxbPoOWbHkT43HjthPYPWibRaLoZtPXyBqy0n8GFIPY=", type: "phool" },
+
+    ];
+
+   
+
+    const vegGrid = document.getElementById('vegGrid');
+    const quantities = {};
+
+    items.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const id = i + 1;
+
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <h2>${item.name}</h2>
+        <div class="controls">
+          <button onclick="changeQty(${id}, -1)">-</button>
+          <span id="qty-${id}">0 ${item.type === "phool" ? 'pc' : 'g'}</span>
+          <button onclick="changeQty(${id}, 1)">+</button>
+        </div>
+        <div class="price">Min Price: ₹${item.price} / ${item.type === "phool" ? 'pc' : '500g'}</div>
+        <div class="price" id="price-${id}">₹0</div>
+        <button class="add-btn" onclick="addToCart('${item.name}', ${id})">Add</button>
+      `;
+      vegGrid.appendChild(card);
+    });
+
+    function changeQty(id, delta) {
+      const item = items[id - 1];
+      if (!quantities[id]) quantities[id] = 0;
+
+      // Quantity increment rule
+      const step = item.type === "phool" ? 1 : 500;
+      const displayUnit = item.type === "phool" ? "pc" : "g";
+
+      quantities[id] = Math.max(0, quantities[id] + (delta * step));
+      const totalPrice = item.type === "phool"
+        ? quantities[id] * item.price
+        : (quantities[id] / 500) * item.price;
+
+      document.getElementById(`qty-${id}`).innerText = `${quantities[id]} ${displayUnit}`;
+      document.getElementById(`price-${id}`).innerText = `₹${totalPrice}`;
+    }
+
+    function addToCart(name, id) {
+      const qty = quantities[id] || 0;
+      const item = items[id - 1];
+      const price = item.type === "phool"
+        ? qty * item.price
+        : (qty / 500) * item.price;
+
+      alert(`${name} added to cart\nQuantity: ${qty} ${item.type === 'phool' ? 'pc' : 'g'}\nPrice: ₹${price}`);
+    }
+  </script>
+</body>
+</html>
+
+
+

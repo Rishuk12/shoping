@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vegetable Selector</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFF5E6;
+    }
+    h1 {
+      text-align: center;
+      color: #1C482E;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    .back-btn {
+      display: inline-block;
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      max-height: 140px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      color: #1C482E;
+      margin: 8px 0;
+    }
+    .price {
+      font-size: 1rem;
+      color: #3C803F;
+      margin-bottom: 10px;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .controls button {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .controls button:hover {
+      background: #2c5f2d;
+    }
+    .add-btn {
+      background: #1C482E;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .add-btn:hover {
+      background: #3C803F;
+    }
+    @media (max-width: 480px) {
+      .card img { max-height: 120px; }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-btn" onclick="history.back()">← Back</div>
+  <h1>Select Your Vegetables</h1>
+
+  <div class="grid" id="vegGrid"></div>
+
+  <script>
+    const vegetables = [
+      {
+        name: "Aloo (Potato)",
+        img: "https://plus.unsplash.com/premium_photo-1724256031338-b5bfba816cfd?w=600&auto=format",
+        pricePerKg: 20
+      },
+      {
+        name: "Pyaaz (Onion)",
+        img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion-on.webp",
+        pricePerKg: 30
+      },
+      {
+        name: "Tamatar (Tomato)",
+        img: "https://plus.unsplash.com/premium_photo-1725001313911-4a6c397a1094?w=600&auto=format",
+        pricePerKg: 25
+      }
+      // You can add more items here
+    ];
+
+    const vegGrid = document.getElementById('vegGrid');
+    const quantities = {};
+
+    vegetables.forEach((veg, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const id = i + 1;
+      const initialQty = 0;
+      const pricePerGram = veg.pricePerKg / 1000;
+      const displayPrice = 250 * pricePerGram;
+
+      card.innerHTML = `
+        <img src="${veg.img}" alt="${veg.name}">
+        <h2>${veg.name}</h2>
+        <div class="price" id="price-${id}">₹${Math.round(displayPrice)}</div>
+        <div class="controls">
+          <button onclick="changeQty(${id}, -250, ${veg.pricePerKg})">-</button>
+          <span id="qty-${id}">${initialQty}g</span>
+          <button onclick="changeQty(${id}, 250, ${veg.pricePerKg})">+</button>
+        </div>
+        <button class="add-btn" onclick="addToCart('${veg.name}', ${id})">Add</button>
+      `;
+
+      vegGrid.appendChild(card);
+    });
+
+    function changeQty(id, delta, pricePerKg) {
+      if (!quantities[id]) quantities[id] = 0;
+      quantities[id] = Math.max(0, quantities[id] + delta);
+      document.getElementById(`qty-${id}`).innerText = `${quantities[id]}g`;
+
+      const pricePerGram = pricePerKg / 1000;
+      const totalPrice = Math.max(250, quantities[id]) * pricePerGram;
+      document.getElementById(`price-${id}`).innerText = `₹${Math.round(totalPrice)}`;
+    }
+
+    function addToCart(name, id) {
+      const qty = quantities[id] || 0;
+      alert(`${name} added to cart with ${qty}g`);
+    }
+  </script>
+
+</body>
+</html>

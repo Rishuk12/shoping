@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veg, Phool & Fruits Selector</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFF5E6;
+    }
+    h1 {
+      text-align: center;
+      color: #1C482E;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    .back-btn {
+      display: inline-block;
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .cart-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1C482E;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 999;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      max-height: 140px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      color: #1C482E;
+      margin: 8px 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .controls button {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .controls button:hover {
+      background: #2c5f2d;
+    }
+    .price {
+      font-size: 0.9rem;
+      color: #1C482E;
+      margin: 4px 0;
+    }
+    .add-btn {
+      background: #1C482E;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .add-btn:hover {
+      background: #3C803F;
+    }
+    .cart-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .cart-content {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    .cart-item span {
+      flex: 1;
+    }
+    .close-btn {
+      float: right;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: red;
+    }
+    .total {
+      text-align: right;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+    .form-group {
+      margin-top: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    select, textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .checkout-btn {
+      margin-top: 15px;
+      width: 100%;
+      background: #1C482E;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      .card img { max-height: 120px; }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-btn" onclick="history.back()">← Back</div>
+  <button class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+
+  <h1>Select Vegetables, Puja Flowers & Fruits</h1>
+
+  <div class="grid" id="itemGrid"></div>
+
+  <!-- CART MODAL -->
+  <div class="cart-modal" id="cartModal">
+    <div class="cart-content">
+      <span class="close-btn" onclick="toggleCart()">✖</span>
+      <h2>🛒 Your Cart</h2>
+      <div id="cartItems"></div>
+      <div class="total" id="totalPrice">Total: ₹0</div>
+
+      <div class="form-group">
+        <label for="slot">Select Delivery Slot:</label>
+        <select id="slot">
+          <option>7 AM - 9 AM</option>
+          <option>9 AM - 12 PM</option>
+          <option>5 PM - 7 PM</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="address">Delivery Address:</label>
+        <textarea id="address" rows="3" placeholder="Enter full delivery address..."></textarea>
+      </div>
+
+      <button class="checkout-btn" onclick="checkout()">Place Order</button>
+    </div>
+  </div>
+
+  <script>
+    const items = [
+      { name: "Red Potato (Aloo)", price: 12, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg", type: "veg" },
+      { name: "White Potato (Aloo)", price: 12, img: "https://media.istockphoto.com/id/479903950/photo/new-potato-isolated-on-white-background.jpg", type: "veg" },
+      { name: "Pyaaz (Onion)", price: 12, img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion-on-for-boarding-much-pommels.webp", type: "veg" },
+      { name: "Banana", price: 30, img: "https://media.istockphoto.com/id/636739634/photo/banana.jpg", type: "fruit" },
+      { name: "Kinnaur Apple", price: 15, img: "https://media.istockphoto.com/id/1141708425/photo/red-apples.jpg", type: "fruit" },
+      { name: "Kashmiri Apple", price: 25, img: "https://media.istockphoto.com/id/121274214/photo/best-red-apple.jpg", type: "fruit" },
+      { name: "Marigold", price: 5, img: "https://media.istockphoto.com/id/493183382/photo/marigold-flower.jpg", type: "phool" },
+      { name: "Marigold Yellow", price: 8, img: "https://media.istockphoto.com/id/885817678/photo/marigold-isolated-on-white-background.jpg", type: "phool" },
+      { name: "Lotus", price: 10, img: "https://media.istockphoto.com/id/1559682249/photo/beautiful-pink-fresh-lotus-isolated-in-the-white-background.jpg", type: "phool" }
+    ];
+
+    const quantities = {}, cart = {};
+    const grid = document.getElementById("itemGrid");
+    const cartCount = document.getElementById("cartCount");
+    const cartItems = document.getElementById("cartItems");
+    const totalPrice = document.getElementById("totalPrice");
+
+    items.forEach((item, index) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const id = index;
+
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.name}" />
+        <h2>${item.name}</h2>
+        <div class="controls">
+          <button onclick="changeQty(${id}, -1)">-</button>
+          <span id="qty-${id}">0 ${item.type === "phool" ? "pc" : "g"}</span>
+          <button onclick="changeQty(${id}, 1)">+</button>
+        </div>
+        <div class="price">₹${item.price} / ${item.type === "phool" ? "pc" : "500g"}</div>
+        <div class="price" id="price-${id}">₹0</div>
+        <button class="add-btn" onclick="addToCart(${id})">Add</button>
+      `;
+      grid.appendChild(card);
+    });
+
+    function changeQty(id, delta) {
+      const item = items[id];
+      const step = item.type === "phool" ? 1 : 500;
+      quantities[id] = Math.max(0, (quantities[id] || 0) + delta * step);
+      const display = item.type === "phool" ? "pc" : "g";
+      const cost = item.type === "phool" ? quantities[id] * item.price : (quantities[id] / 500) * item.price;
+
+      document.getElementById(`qty-${id}`).innerText = `${quantities[id]} ${display}`;
+      document.getElementById(`price-${id}`).innerText = `₹${cost}`;
+    }
+
+    function addToCart(id) {
+      if (!quantities[id] || quantities[id] === 0) return alert("Please select quantity first.");
+      cart[id] = { ...items[id], qty: quantities[id] };
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      cartItems.innerHTML = "";
+      let total = 0;
+      let count = 0;
+      Object.keys(cart).forEach(id => {
+        const item = cart[id];
+        const price = item.type === "phool" ? item.qty * item.price : (item.qty / 500) * item.price;
+        total += price;
+        count++;
+
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            <span>${item.name} (${item.qty} ${item.type === "phool" ? "pc" : "g"})</span>
+            <span>₹${price}</span>
+            <span><button onclick="removeItem(${id})">❌</button></span>
+          </div>
+        `;
+      });
+      cartCount.innerText = count;
+      totalPrice.innerText = `Total: ₹${total}`;
+    }
+
+    function removeItem(id) {
+      delete cart[id];
+      updateCartDisplay();
+    }
+
+    function toggleCart() {
+      const modal = document.getElementById("cartModal");
+      modal.style.display = modal.style.display === "flex" ? "none" : "flex";
+    }
+
+    function checkout() {
+      const address = document.getElementById("address").value.trim();
+      const slot = document.getElementById("slot").value;
+      if (!address) return alert("Please enter your address before placing order.");
+      alert("Order Placed!\nSlot: " + slot + "\nAddress: " + address);
+      toggleCart();
+    }
+  </script>
+</body>
+</html>
