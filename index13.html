@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Veg, Phool & Fruits Selector</title>
+
+  <!-- Styles -->
   <style>
     * { box-sizing: border-box; }
     body {
@@ -128,12 +130,8 @@
       margin: 4px 0;
       color: #1C482E;
     }
-    .order-entry ul {
-      padding-left: 20px;
-    }
-    .order-entry li {
-      font-size: 0.9rem;
-    }
+    .order-entry ul { padding-left: 20px; }
+    .order-entry li { font-size: 0.9rem; }
     .address-form input, .address-form select {
       width: 100%;
       margin: 4px 0;
@@ -160,14 +158,299 @@
       color: #1C482E;
       margin: 20px 0 10px;
     }
+    .back-btn, .cart-btn, .order-btn {
+      background: #1C482E;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .search-section {
+      margin: 20px auto 10px;
+      display: flex;
+      justify-content: center;
+    }
+    .search-section input {
+      width: 90%;
+      max-width: 500px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .section-divider {
+      height: 4px;
+      background: linear-gradient(to right, #1C482E, #3C803F, #1C482E);
+      border: none;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .card:hover { transform: scale(1.04); }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      max-height: 140px;
+      object-fit: cover;
+    }
+    .controls, .payment-options {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .controls button, .add-btn, .place-order, .location-btn {
+      background: #3C803F;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .add-btn { width: 100%; margin-top: 8px; }
+    .section-title {
+      font-size: 1.2rem;
+      color: #1C482E;
+      margin: 20px 0 10px;
+    }
+    .add-popup {
+     position: fixed;
+     top: 20px;
+     right: 20px;
+     background: #d4edda;
+     color: #155724;
+     padding: 12px 20px;
+     border-radius: 8px;
+     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+     display: none;
+     font-size: 1rem;
+     z-index: 1000;
+    }
+  .cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+ 
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qty-info {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.item-price {
+  font-weight: bold;
+  color: #1C482E;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.qty-btn {
+  background: #3C803F;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.qty-btn:hover {
+  background: #1C482E;
+}
+
+
+.remove-btn {
+  background: #1C482E
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.remove-btn:hover {
+  transform: scale(1.1);
+}
+.cart-item .controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.cart-item .controls button {
+  background: #3C803F;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  padding: 6px 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.cart-item .controls button:hover {
+  background: #1C482E;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #f9f9f9;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  gap: 12px;
+}
+
+
+.item-details {
+  flex: 1;
+}
+
+.qty-info {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.item-price {
+  font-weight: bold;
+  color: #1C482E;
+  margin-top: 4px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-left: 40px;
+}
+
+.qty-btn {
+  background: #3C803F;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.qty-btn:hover {
+  background: #1C482E;
+}
+
+
+.qty-btn:hover {
+  background: #1C482E;
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  background-image: url('https://cdn-icons-png.flaticon.com/512/3096/3096673.png');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.2s;
+}
+
+.remove-btn:hover {
+  transform: scale(1.1);
+}
+#scrollTopBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: none;
+}
+
   </style>
+
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 </head>
 <body>
+  
   <div class="top-bar">
-    <div class="back-btn" onclick="history.back()">← Back</div>
+    <div class="back-btn" onclick="goBack()">← Back</div>
     <div class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
     <div class="order-btn" onclick="toggleOrders()">📦 My Orders</div>
   </div>
+
+   
+  <div class="search-section">
+    <input type="text" id="searchInput" placeholder="🔍 Search item name..." oninput="filterItems()" />
+  </div>
+  <hr class="section-divider" />
+
   <h1>Select Vegetables, Puja Flowers & Fruits</h1>
 
   <div class="section-title">🥦 Vegetables</div>
@@ -185,18 +468,27 @@
     <p><strong>Total: ₹<span id="cartTotal">0</span></strong></p>
 
     <h3>Delivery Address</h3>
-    <div class="address-form">
-      <input placeholder="Full Name" id="fullName" />
-      <input placeholder="Mobile Number" id="mobile" />
-      <input placeholder="Address" id="address" />
-      <input placeholder="Pin Code" id="pin" />
-      <input placeholder="Area" id="area" />
-      <input placeholder="Landmark" id="landmark" />
-      <input placeholder="District" id="district" />
-      <input placeholder="State" id="state" readonly />
-      <button class="location-btn" onclick="autofillLocation()">📍 Detect My Location</button>
-    </div>
+     <div class="address-form">
+       <input placeholder="Full Name" id="fullName" />
+       <input placeholder="Mobile Number" id="mobile" />
+       <input placeholder="Full Address " id="address" />
 
+       <select id="state" onchange="loadDistricts()">
+         <option value="">select State</option>
+       </select>
+
+       <select id="district" onchange="loadPincodes()">
+         <option value="">select District</option>
+       </select>
+
+       <select id="pin">
+         <option value="">select PinCode </option>
+       </select>
+
+       <input placeholder="Area / Locality / Colony Name" id="area" />
+       <input placeholder="Landmark /Building / Apartment Name" id="landmark" />
+       
+      </div>
     <h3>Select Time Slot</h3>
     <select id="timeSlot">
       <option value="6-8 AM">6–8 AM</option>
@@ -220,17 +512,32 @@
   </div>
 
   <div class="success-popup" id="successPopup">🎉 Order Placed Successfully!</div>
-
   <script>
-    const serviceableAreas = [
-      { state: "Bihar", district: ["Patna","Nalanda"], pincodes: ["800001", "800014", "800020","804453","800002","803110"] },
-      { state: "Jammu and Kashmir", district: "srinagar", pincodes: ["190006","190023"] }
-    ];
+  const serviceableAreas = [
+  {
+    state: "Bihar",
+    district: [
+      { name: "Patna", pincodes: ["800001", "800014", "800020","804453"] },
+      { name: "Nalanda", pincodes: [ "803110"] }
+    ]
+  },
+  {
+    state: "j&k",
+    district: [
+      { name: "srinagar", pincodes: ["190006","190023"] }
+    ]
+  },
+  {
+    state: "UP (Uttar Pradesh)",
+    district: [
+      { name: "Lucknow", pincodes: ["226010","226016"] }
+    ]
+  }
+];
 
-    const items = [
-      
-
-        { name: "Red Potato (Aloo) ",price:12, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg?s=612x612&w=0&k=20&c=wzcLLI5sS7U9qafpsTdlFK0jUV3SI-A8chmNBwXKRkc=" ,type:"veg"},
+  const items = [
+ 
+             { name: "Red Potato (Aloo) ",price:12, img: "https://media.istockphoto.com/id/155231888/photo/potatoes.jpg?s=612x612&w=0&k=20&c=wzcLLI5sS7U9qafpsTdlFK0jUV3SI-A8chmNBwXKRkc=" ,type:"veg"},
       { name: "White Potato (Aloo)",price:14, img: "https://media.istockphoto.com/id/479903950/photo/new-potato-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=Npy46xC15Vipx35PDek1Xh3gW3VsI8HWieHEES4HLNY=" ,type:"veg"},
       { name: "Pyaaz (Onion)",price:15 ,img: "https://media.istockphoto.com/id/1162478937/photo/small-red-onion-on-for-boarding-much-pommels.webp?a=1&b=1&s=612x612&w=0&k=20&c=LPEGVz2fmXuVjh-_gsL7-NyQHoAW654J1ihwZOzm06s=",type:"veg" },
       { name: "Tamatar (Tomato)",price:20, img: "https://media.istockphoto.com/id/831570242/photo/three-juicy-red-tomatoes-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=bBrjZsWY4eg90OpA2S6cO3psGR1TFx8f4L0HAmIQqm4=",type:"veg" },
@@ -331,207 +638,364 @@
        { name: "Dry cow dung", price: 5, img: "https://media.istockphoto.com/id/524179074/photo/pellet-for-heating.jpg?s=612x612&w=0&k=20&c=jKIpU5QzwuJRc1BR3MJu4Ecoh6_qcyEfdXY_rCBxaRg=", type: "phool" },
       { name: "cow dung", price: 5, img: "https://media.istockphoto.com/id/1738805853/photo/dry-cow-excrement-isolated-close-top-view.jpg?s=612x612&w=0&k=20&c=KxbPoOWbHkT43HjthPYPWibRaLoZtPXyBqy0n8GFIPY=", type: "phool" },
 
-    ];
+      
+   
+  ];
 
-    const cart = [], quantities = {};
-    const vegGrid = document.getElementById('vegGrid');
-    const fruitGrid = document.getElementById('fruitGrid');
-    const flowerGrid = document.getElementById('flowerGrid');
-    const cartItems = document.getElementById('cartItems');
-    const cartCount = document.getElementById('cart-count');
-    const cartTotal = document.getElementById('cartTotal');
-    const cartPopup = document.getElementById('cartPopup');
-    const successPopup = document.getElementById('successPopup');
-    const ordersPopup = document.getElementById('ordersPopup');
+  const cart = [], quantities = {};
+  const vegGrid = document.getElementById('vegGrid');
+  const fruitGrid = document.getElementById('fruitGrid');
+  const flowerGrid = document.getElementById('flowerGrid');
+  const cartItems = document.getElementById('cartItems');
+  const cartCount = document.getElementById('cart-count');
+  const cartTotal = document.getElementById('cartTotal');
+  const cartPopup = document.getElementById('cartPopup');
+  const successPopup = document.getElementById('successPopup');
+  const ordersPopup = document.getElementById('ordersPopup');
 
-    function renderItems() {
-      items.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
-          <h2>${item.name}</h2>
-          <div class="controls">
-            <button onclick="changeQty(${index}, -1)">-</button>
-            <span id="qty-${index}">0 ${item.type === "phool" ? 'pc' : 'g'}</span>
-            <button onclick="changeQty(${index}, 1)">+</button>
+  function renderItems() {
+    items.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <h2>${item.name}</h2>
+        <div class="controls">
+          <button onclick="changeQty(${index}, -1)">-</button>
+          <span id="qty-${index}">0 ${item.type === "phool" ? 'pc' : 'g'}</span>
+          <button onclick="changeQty(${index}, 1)">+</button>
+        </div>
+        <div class="price">₹${item.price} / ${item.type === "phool" ? 'pc' : '500g'}</div>
+        <div class="item-total" id="total-${index}" style="margin-top:6px;color:#1C482E;font-weight:bold;">Total: ₹0</div>
+        <button class="add-btn" onclick="addToCart(${index})">Add</button>
+      `;
+      (item.type === "veg" ? vegGrid : item.type === "fruit" ? fruitGrid : flowerGrid).appendChild(card);
+    });
+  }
+   function filterItems() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const name = card.querySelector('h2')?.innerText.toLowerCase();
+        card.style.display = name.includes(search) ? 'block' : 'none';
+      });
+    }
+
+  function changeQty(index, delta) {
+    const item = items[index];
+    const step = item.type === "phool" ? 1 : 500;
+    quantities[index] = Math.max(0, (quantities[index] || 0) + delta * step);
+    document.getElementById(`qty-${index}`).innerText = `${quantities[index]} ${item.type === "phool" ? 'pc' : 'g'}`;
+    const total = item.type === "phool" ? quantities[index] * item.price : (quantities[index] / 500) * item.price;
+    document.getElementById(`total-${index}`).innerText = `Total: ₹${total.toFixed(2)}`;
+  }
+
+  function addToCart(index) {
+    const qty = quantities[index] || 0;
+    if (qty === 0) return;
+    const exists = cart.find(i => i.index === index);
+    exists ? exists.qty += qty : cart.push({ index, qty });
+    quantities[index] = 0;
+    document.getElementById(`qty-${index}`).innerText = `0 ${items[index].type === "phool" ? 'pc' : 'g'}`;
+    document.getElementById(`total-${index}`).innerText = `Total: ₹0`;
+    updateCart();
+  }
+  function addToCart(index) {
+    const qty = quantities[index] || 0;
+    if (qty === 0) return;
+
+    const exists = cart.find(i => i.index === index);
+    if (exists) {
+      exists.qty += qty;
+    } else {
+      cart.push({ index, qty });
+    }
+
+    updateCart();
+   
+  }
+  function addToCart(index) {
+    const qty = quantities[index] || 0;
+    if (qty === 0) return;
+
+    const exists = cart.find(i => i.index === index);
+    if (exists) {
+      exists.qty += qty;
+    } else {
+      cart.push({ index, qty });
+    }
+
+    updateCart();
+
+  
+    const popup = document.getElementById('addPopup');
+    popup.style.display = 'block';
+    setTimeout(() => popup.style.display = 'none', 1500);  
+  }
+
+  function updateCart() {
+  cartItems.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((c, i) => {
+    const item = items[c.index];
+    const isPhool = item.type === "phool";
+    const step = isPhool ? 1 : 250;
+
+    const qtyText = isPhool
+      ? `${c.qty}pc`
+      : `${c.qty}g (${(c.qty / 1000).toFixed(2)}kg)`;
+
+    const price = isPhool
+      ? c.qty * item.price
+      : (c.qty / 500) * item.price;
+
+    total += price;
+    cartItems.innerHTML += `
+      <div class="cart-item">
+        <img src="${item.img}" alt="${item.name}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; margin-right: 10px;" />
+    
+        <div class="item-details">
+           <strong>${item.name}</strong>
+            <div class="qty-info">
+              ${item.type === "phool" ? `${c.qty} pc` : `${c.qty}g (${(c.qty / 1000).toFixed(2)}kg)`}
+            </div>
+            <div class="item-price">₹${price.toFixed(2)}</div>
           </div>
-          <div class="price">₹${item.price} / ${item.type === "phool" ? 'pc' : '500g'}</div>
-          <div class="item-total" id="total-${index}" style="margin-top:6px;color:#1C482E;font-weight:bold;">Total: ₹0</div>
-          <button class="add-btn" onclick="addToCart(${index})">Add</button>
-        `;
-        (item.type === "veg" ? vegGrid : item.type === "fruit" ? fruitGrid : flowerGrid).appendChild(card);
-      });
+
+        <div class="action-buttons">
+          <button onclick="changeCartQty(${i}, -1)" class="qty-btn">➖</button>
+          <button onclick="changeCartQty(${i}, 1)" class="qty-btn">➕</button>
+          <button onclick="removeFromCart(${i})" class="remove-btn">🗑️</button>
+        </div>
+      </div>`;
+
+
+
+
+  });
+  
+
+  cartCount.innerText = cart.length;
+  cartTotal.innerText = total.toFixed(2);
+ }
+
+
+
+  function removeFromCart(i) {
+    cart.splice(i, 1);
+    updateCart();
+  }
+
+  function toggleCart() {
+    cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function toggleOrders() {
+    loadOrderHistory();
+    ordersPopup.style.display = ordersPopup.style.display === 'block' ? 'none' : 'block';
+  }
+  
+  function loadOrderHistory() {
+  const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+  const list = document.getElementById('orderHistoryList');
+  list.innerHTML = "";
+
+  if (history.length === 0) {
+    list.innerHTML = "<p>No past orders found.</p>";
+    return;
+  }
+
+  history.reverse().forEach((order, i) => {
+    const orderId = "ORD" + (1000 + i);
+    const dateTime = new Date(order.date).toLocaleString();
+
+    const div = document.createElement("div");
+    div.className = "order-entry";
+    div.style = `
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+      border-left: 6px solid #28a745;
+    `;
+    const escapedOrder = JSON.stringify(order).replace(/'/g, "\\'");
+    div.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h4 style="margin: 0;">🧾 Order ID: ${orderId}</h4>
+        <span style="font-weight: bold; color: green;">${order.status || "🕒 Pending"}</span>
+      </div>
+
+      <p style="margin: 5px 0;"><strong>Date:</strong> ${dateTime}</p>
+      <p><strong>Delivery Slot:</strong> ${order.timeSlot}</p>
+      <p><strong>Payment Mode:</strong> ${order.payment || 'COD'}</p>
+
+      <hr style="margin: 10px 0;"/>
+
+      <ul style="padding-left: 20px; margin: 0;">
+        ${order.items.map(item => {
+          let unit = item.type === 'phool'
+            ? `${item.qty} pc`
+            : item.qty >= 1000
+              ? `${(item.qty / 1000)} kg`
+              : `${item.qty} g`;
+          return `<li>${item.name} - ${unit}</li>`;
+        }).join('')}
+      </ul>
+
+      <p style="margin-top: 10px;"><strong>Total:</strong> ₹${order.total}</p>
+      <button onclick="downloadInvoice('${escapedOrder}')" style="margin-top:10px; background:#1C482E; color:white; border:none; padding:6px 12px; border-radius:6px;">📥 Download Invoice</button>
+    `;
+
+
+    list.appendChild(div);
+  });
+ }
+
+  function placeOrder() {
+    if (cart.length === 0) return alert("Cart is empty!");
+
+    const name = document.getElementById('fullName').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const pin = document.getElementById('pin').value.trim();
+    const state = document.getElementById('state').value.trim();
+    const district = document.getElementById('district').value.trim();
+    const timeSlot = document.getElementById('timeSlot').value;
+    const payment = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
+
+    if (!name || !mobile || !address || !pin || !state || !district) {
+      return alert("Please fill all address details.");
     }
 
-    function changeQty(index, delta) {
-      const item = items[index];
-      const step = item.type === "phool" ? 1 : 500;
-      quantities[index] = Math.max(0, (quantities[index] || 0) + delta * step);
-      document.getElementById(`qty-${index}`).innerText = `${quantities[index]} ${item.type === "phool" ? 'pc' : 'g'}`;
-      const total = item.type === "phool" ? quantities[index] * item.price : (quantities[index] / 500) * item.price;
-      document.getElementById(`total-${index}`).innerText = `Total: ₹${total.toFixed(2)}`;
+    const match = serviceableAreas.find(area => {
+     if (area.state.toLowerCase() !== state.toLowerCase()) return false;
+
+     const districtMatch = area.district.find(d => {
+      return (
+        d.name.toLowerCase() === district.toLowerCase() &&
+        d.pincodes.includes(pin)
+      );
+     });
+
+     return !!districtMatch;
+    });
+
+
+    if (!match) {
+      alert("Sorry! We don't deliver to your location yet.");
+      return;
     }
 
-    function addToCart(index) {
-      const qty = quantities[index] || 0;
-      if (qty === 0) return;
-      const exists = cart.find(i => i.index === index);
-      exists ? exists.qty += qty : cart.push({ index, qty });
-      quantities[index] = 0;
-      document.getElementById(`qty-${index}`).innerText = `0 ${items[index].type === "phool" ? 'pc' : 'g'}`;
-      document.getElementById(`total-${index}`).innerText = `Total: ₹0`;
-      updateCart();
-    }
+    const order = {
+      items: cart.map(c => ({ name: items[c.index].name, qty: c.qty, type: items[c.index].type })),
+      total: document.getElementById('cartTotal').innerText,
+      address, state, district, pin, timeSlot, payment,
+      date: new Date().toLocaleString(),
+      status: "⏳ Pending"
+    };
 
-    function updateCart() {
-      cartItems.innerHTML = '';
-      let total = 0;
-      cart.forEach((c, i) => {
-        const item = items[c.index];
-        const price = item.type === "phool" ? c.qty * item.price : (c.qty / 500) * item.price;
-        total += price;
-        cartItems.innerHTML += `
-          <div class="cart-item">
-            <span>${item.name} - ${c.qty}${item.type === "phool" ? 'pc' : 'g'} - ₹${price.toFixed(2)}</span>
-            <button onclick="removeFromCart(${i})">x</button>
-          </div>`;
-      });
-      cartCount.innerText = cart.length;
-      cartTotal.innerText = total.toFixed(2);
-    }
+    const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+    history.push(order);
+    localStorage.setItem("orderHistory", JSON.stringify(history));
 
-    function removeFromCart(i) {
+    cart.length = 0;
+    updateCart();
+    cartPopup.style.display = 'none';
+    successPopup.style.display = 'block';
+    setTimeout(() => successPopup.style.display = 'none', 3000);
+  }
+  function goBack() {
+  const cartPopup = document.getElementById('cartPopup');
+  const ordersPopup = document.getElementById('ordersPopup');
+
+  if (cartPopup.style.display === 'block') {
+    cartPopup.style.display = 'none';
+  } else if (ordersPopup.style.display === 'block') {
+    ordersPopup.style.display = 'none';
+  } else {
+    alert("Nothing to go back from.");
+  }
+} 
+    function changeCartQty(i, delta) {
+    const cartItem = cart[i];
+    const item = items[cartItem.index];
+    const step = item.type === "phool" ? 1 : 250;
+
+    cartItem.qty = Math.max(0, cartItem.qty + delta * step);
+
+    if (cartItem.qty === 0) {
       cart.splice(i, 1);
-      updateCart();
     }
 
-    function toggleCart() {
-      cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
-    }
+    updateCart();
+  }
 
-    function toggleOrders() {
-      loadOrderHistory();
-      ordersPopup.style.display = ordersPopup.style.display === 'block' ? 'none' : 'block';
-    }
+ 
+  function loadStates() {
+    const stateSelect = document.getElementById("state");
+    stateSelect.innerHTML = `<option value="">Select State</option>`; 
 
-    function loadOrderHistory() {
-      const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
-      const list = document.getElementById('orderHistoryList');
-      list.innerHTML = "";
+    serviceableAreas.forEach(area => {
+      const option = document.createElement("option");
+      option.value = area.state;
+      option.textContent = area.state;
+      stateSelect.appendChild(option);
+    });
+  }
 
-      if (history.length === 0) {
-        list.innerHTML = "<p>No past orders found.</p>";
-        return;
-      }
+  
+  function loadDistricts() {
+    const stateVal = document.getElementById("state").value;
+    const districtSelect = document.getElementById("district");
+    districtSelect.innerHTML = `<option value="">Select District</option>`;
 
-      history.reverse().forEach((order, i) => {
-        const div = document.createElement("div");
-        div.className = "order-entry";
-        div.innerHTML = `
-          <h4>Order #${history.length - i}</h4>
-          <ul>
-             ${order.items.map(item => {
-               let unit = item.type === 'phool' ? 'pc' : (item.qty >= 1000 ? (item.qty / 1000) + 'kg' : item.qty + 'g');
-               return `<li>${item.name} - ${unit}</li>`;
-             }).join('')}
-          </ul>
-          <p><strong>Total:</strong> ₹${order.total}</p>
-          <p><strong>Time Slot:</strong> ${order.timeSlot}</p>
-          <p><strong>Date:</strong> ${order.date}</p>
-          <p><strong>Status:</strong> ✅ Delivered</p>
-        `;
-        list.appendChild(div);
+    const stateObj = serviceableAreas.find(area => area.state === stateVal);
+    if (stateObj && Array.isArray(stateObj.district)) {
+      stateObj.district.forEach(d => {
+        const option = document.createElement("option");
+        option.value = d.name;
+        option.textContent = d.name;
+        districtSelect.appendChild(option);
       });
     }
+  }
 
-   // async function autofillLocation() {
-     // if (navigator.geolocation) {
-       // navigator.geolocation.getCurrentPosition(async (position) => {
-       //   const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
-        //  const data = await res.json();
-       //   const addr = data.address || {};
-        //  document.getElementById('state').value = addr.state || '';
-         // document.getElementById('district').value = addr.county || addr.city || '';
-         // document.getElementById('pin').value = addr.postcode || '';
-         // document.getElementById('area').value = addr.suburb || addr.city_district || '';
+  
+  function loadPincodes() {
+    const stateVal = document.getElementById("state").value;
+    const districtVal = document.getElementById("district").value;
+    const pinSelect = document.getElementById("pin");
+    pinSelect.innerHTML = `<option value="">Select Pincode</option>`;
 
-        //  document.getElementById('area').value = addr.sub es code ka baad ka code send karo
-    async function autofillLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
-          const data = await res.json();
-          const addr = data.address || {};
-          document.getElementById('state').value = addr.state || '';
-          document.getElementById('district').value = addr.county || addr.city || '';
-          document.getElementById('pin').value = addr.postcode || '';
-          document.getElementById('area').value = addr.suburb || addr.city_district || '';
-          document.getElementById('address').value = data.display_name || '';
+    const stateObj = serviceableAreas.find(area => area.state === stateVal);
+    if (stateObj) {
+      const districtObj = stateObj.district.find(d => d.name === districtVal);
+      if (districtObj) {
+        districtObj.pincodes.forEach(pin => {
+          const option = document.createElement("option");
+          option.value = pin;
+          option.textContent = pin;
+          pinSelect.appendChild(option);
         });
       }
     }
-
-    function placeOrder() {
-      if (cart.length === 0) return alert("Cart is empty!");
-      const name = document.getElementById('fullName').value.trim();
-      const mobile = document.getElementById('mobile').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const pin = document.getElementById('pin').value.trim();
-      const state = document.getElementById('state').value.trim();
-      const district = document.getElementById('district').value.trim();
-      const timeSlot = document.getElementById('timeSlot').value;
-      const payment = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
-
-      if (!name || !mobile || !address || !pin || !state || !district) {
-        return alert("Please fill all address details.");
-      }
-      const match = serviceableAreas.find(area => {
-        const states = Array.isArray(area.state) ? area.state : [area.state];
-        const districts = Array.isArray(area.district) ? area.district : [area.district];
-        return (
-          states.map(s => s.toLowerCase()).includes(state.toLowerCase()) &&
-          districts.map(d => d.toLowerCase()).includes(district.toLowerCase()) &&
-          area.pincodes.includes(pin)
-        );
-      });
-
-
-      //const match = serviceableAreas.find(area =>
-       // area.state.toLowerCase() === state.toLowerCase() &&
-       // area.district.toLowerCase() === district.toLowerCase() &&
-       // area.pincodes.includes(pin)
-      //);
-
-      if (!match) {
-        alert("Sorry! We don't deliver to your location yet.");
-        return;
-      }
-
-      const order = {
-        items: cart.map(c => ({ 
-          name: items[c.index].name, 
-          qty: c.qty,
-          type: items[c.index].type 
-        })),
-        total: document.getElementById('cartTotal').innerText,
-        address, state, district, pin, timeSlot, payment,
-        date: new Date().toLocaleString(),
-        status: "✅ Delivered"
-      };
-
-      const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
-      history.push(order);
-      localStorage.setItem("orderHistory", JSON.stringify(history));
-
-      cart.length = 0;
-      updateCart();
-      cartPopup.style.display = 'none';
-      successPopup.style.display = 'block';
-      setTimeout(() => successPopup.style.display = 'none', 3000);
-    }
-
-    window.onload = () => renderItems();
-  </script>
+  }
+  
+  window.onload = () => {
+    renderItems(); 
+    loadStates();  
+  }
+</script>
+<div class="add-popup" id="addPopup">✅ Item added to cart!</div>
+<div id="ordersPopup" class="popup">
+  <h3 style="margin-bottom:10px;">📦 My Orders</h3>
+  <div id="orderHistoryList"></div>
+  <button onclick="toggleOrders()">Close</button>
+</div>
+<button id="scrollTopBtn" title="Go to top">⬆️</button>
 </body>
-</html>           
+</html>
+
+       
